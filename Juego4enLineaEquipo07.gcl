@@ -1,0 +1,195 @@
+#
+# Juego4enLineaEquipo07.gcl
+#
+# DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
+# contra una IA con 2 niveles de dificultad (facil y medio), a traves de la \
+# terminal de la interfaz grafica.
+#
+# Autores: 
+#	Br. Jose Barrera y Alfredo Cruz.
+#
+# Ultima modificacion: 16/03/2018.
+
+[
+   CONST 
+    S : array [0..7)x[0..8) of int;
+    modo : int;
+
+   VAR
+	A : array [0..7)x[0..8) of int;
+	jugando : int;
+	turno : int;
+	jugador : int;
+	juega : int;
+	ganador : int;
+	 
+   { %forall i,j: 0<=i<7 /\ 0<=j<8: S[i][j]=0 /\ (modo=1 \/ modo=2)}
+
+	jugando,turno,ganador,juega:=1,2,0,3
+
+	do jugando=1 ->
+		if turno = 43 ->
+			jugando:=0
+		[] turno < 43 ->
+			if juega mod 2 != 0 ->
+				juega1;
+			[] juega mod 2 = 0 ->
+				juega2;
+			turno := turno+1
+			juega := juega+1 
+			fi
+		fi
+	od
+
+	if ganador = 0 ->
+		juega := 2 
+	[] ganador = 1 ->
+		juega := 3
+	[] ganador = 2 ->
+		juega := 2
+
+
+	  
+   { (%forall i: 0<=i<|S| /\ (i mod 2 = 0): 
+        esprimo(S[i]) /\ (S[i] < M) /\ (N mod (%pi: 0<=i<S[i+1] : S[i]) = 0) /\ S[i+1] = cuantoDivide(S[i],N)) }
+]
+
+func jugada1( i : int , j : int) -> 
+{ Pre: True }
+{ Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
+[
+	VAR
+		
+		if valida(i,j) ->
+			A[i][j] := 1
+		[] valida(i,j) ->
+			skip
+	>> A[i][j]
+		
+func jugada2( modo : int ) ->
+{ Pre: modo = 2 \/ modo = 1 }
+{ Post:  (valida(i,j) => A[i][j] = 2]) /\ (valida(i,j) => A[i][j] = 0) }
+[
+	VAR
+
+	if modo = 2 ->
+
+	[] modo = 1 ->
+		i,j:=5,6
+		do 0 <= i < 6 ->
+			do  0 <= j < 7 ->
+				if valida(i,j) ->
+					A[i][j] := 2
+				[] !valida(i,j) ->
+					skip
+				fi
+				j:=j-1
+			od
+			i:=i-1
+		od
+	fi
+
+
+
+
+
+func valida( i : int , j : int ) -> bool
+{ Pre: 0 <= i < 7 /\ 0 <= j < 8 }
+{ Post:  (valida=0 /\ jugando=1) \/ (valida=1) }
+[
+	VAR
+		valida : bool;
+		if A[i][j]=0 ->
+			if i=5 ->
+				valida:=True;
+			[] i<5 /\ A[i-1][j]!=0 ->
+				valida:=True;
+			[] i<5 /\ A[i-1][j]=0 ->
+				valida:=False;
+			fi
+		[] A[i][j]!=0 ->
+			valida:=False;
+		fi
+
+		
+	>> valida
+]
+		
+
+func victoria( A : array [0..N)x[0..M) ) -> (int,int):
+{ Pre: N = 7 /\ M = 8  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando := 1
+
+	i:=0;
+	do i < 6 ->
+		j:=0;
+		do j < 4 /\ jugando=1 ->
+			#Conexion diagonal principal
+			if i<3 /\ A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			
+			[] i<3 /\ A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			#Conexion horizontal
+			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			[] A[i][j]=
+			if;
+			j:=j+1;
+		od;
+		i:=i+1;
+	od;
+	
+	i:=0;
+	do i < 3 ->
+		j:=0;
+		do j < 7 /\ jugando=1 ->
+			#Conexion diagonal secundaria
+			if j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			[] j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			#Conexion vertical
+			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
+				ganador:=1;
+				jugando:=0;
+			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
+				ganador:=2;
+				jugando:=0;
+			fi;
+			j:=j+1
+		od;
+		i:=i+1;
+	od
+
+
+
+   >> (ganador,jugando)
+]
