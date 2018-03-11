@@ -11,32 +11,28 @@
 # Ultima modificacion: 16/03/2018.
 
 [
-   CONST 
-    S : array [0..7)x[0..8) of int;
-    modo : int;
-
    VAR
-	A : array [0..7)x[0..8) of int;
+	A : array [0..6)x[0..7) of int;
 	jugando : int;
 	turno : int;
 	jugador : int;
 	juega : int;
 	ganador : int;
 	 
-   { %forall i,j: 0<=i<7 /\ 0<=j<8: S[i][j]=0 /\ (modo=1 \/ modo=2)}
+   { %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
 
-	jugando,turno,ganador,juega:=1,2,0,3
+	jugando,turno,ganador,juega:=1,1,0,3
 
 	do jugando=1 ->
-		if turno = 43 ->
+		if turno = 42 ->
 			jugando:=0
-		[] turno < 43 ->
+		[] turno < 42 ->
 			if juega mod 2 != 0 ->
 				juega1;
 			[] juega mod 2 = 0 ->
 				juega2;
 			turno := turno+1
-			juega := juega+1 
+			juega := juega+1
 			fi
 		fi
 	od
@@ -54,27 +50,36 @@
         esprimo(S[i]) /\ (S[i] < M) /\ (N mod (%pi: 0<=i<S[i+1] : S[i]) = 0) /\ S[i+1] = cuantoDivide(S[i],N)) }
 ]
 
-func jugada1( i : int , j : int) -> 
+func jugada1( A : array [0..6)x[0..7), i : int , j : int) -> A : array [0..6)x[0..7)
 { Pre: True }
 { Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
 [
 	VAR
-		
+		ganador : int;
+		jugando : int;
+
+		ganador := 0;
+		jugando := 0;
+
 		if valida(i,j) ->
 			A[i][j] := 1
 		[] valida(i,j) ->
 			skip
-	>> A[i][j]
-		
-func jugada2( modo : int ) ->
-{ Pre: modo = 2 \/ modo = 1 }
+		[] i = 9 /\ j = 9 ->
+			jugando := 0;
+			ganador := 2;
+	>> A,ganador,jugando
+
+
+func jugada2( A : array [0..6)x[0..7), nivel : int ) -> A : array [0..6)x[0..7)
+{ Pre: nivel = 2 \/ nivel = 1 }
 { Post:  (valida(i,j) => A[i][j] = 2]) /\ (valida(i,j) => A[i][j] = 0) }
 [
 	VAR
 
-	if modo = 2 ->
+	if nivel = 2 ->
 
-	[] modo = 1 ->
+	[] nivel = 1 ->
 		i,j:=5,6
 		do 0 <= i < 6 ->
 			do  0 <= j < 7 ->
@@ -93,12 +98,13 @@ func jugada2( modo : int ) ->
 
 
 
-func valida( i : int , j : int ) -> bool
-{ Pre: 0 <= i < 7 /\ 0 <= j < 8 }
+func valida( A : array [0..6)x[0..7), i : int , j : int ) -> bool
+{ Pre: 0 <= i < 6 /\ 0 <= j < 7 }
 { Post:  (valida=0 /\ jugando=1) \/ (valida=1) }
 [
 	VAR
 		valida : bool;
+		
 		if A[i][j]=0 ->
 			if i=5 ->
 				valida:=True;
@@ -111,13 +117,12 @@ func valida( i : int , j : int ) -> bool
 			valida:=False;
 		fi
 
-		
 	>> valida
 ]
 		
 
-func victoria( A : array [0..N)x[0..M) ) -> (int,int):
-{ Pre: N = 7 /\ M = 8  }
+func victoria( A : array [0..6)x[0..7) ) -> (int,int):
+{ Pre: N = 6 /\ M = 7  }
 { Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
 [
 	VAR
