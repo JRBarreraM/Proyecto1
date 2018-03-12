@@ -127,7 +127,7 @@ func valida( A : array [0..6)x[0..7), i : int , j : int ) -> bool
 ]
 		
 
-func victoria( A : array [0..6)x[0..7) ) -> (int,int):
+proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); out ganador:int; out jugando:bool )
 { Pre: N = 6 /\ M = 7  }
 { Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
 [
@@ -137,25 +137,50 @@ func victoria( A : array [0..6)x[0..7) ) -> (int,int):
 		i : int;
 		j : int;
 
-	jugando := 1
+	jugando := 1;
 
 	i:=0;
 	{bound 6-i}
-	do i < 6 ->
+	do i < 3 ->
 		j:=0;
 		{bound 4-j}
 		do j < 4 /\ jugando=1 ->
 			#Conexion diagonal principal
-			if i<3 /\ A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1 ->
+			if A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1 ->
 				ganador:=1;
 				jugando:=0;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			
-			[] i<3 /\ A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2 ->
+			[] A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2 ->
 				ganador:=2;
 				jugando:=0;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 
+			
+			fi
+			j:=j+1;
+		od;
+		i:=i+1;
+	od;
+	]
+proc victoriahorizontal (in A : array [0..6)x[0..7); out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando := 1;
+
+	i:=0;
+	{bound 6-i}
+	do i<6->
+		j:=0;
+		{bound 4-j}
+		do j<4 and jugando=1->
 			#Conexion horizontal
 			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1 ->
 				ganador:=1;
@@ -166,16 +191,59 @@ func victoria( A : array [0..6)x[0..7) ) -> (int,int):
 				ganador:=2;
 				jugando:=0;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
-
-			[] A[i][j]=
-			if;
+			fi
 			j:=j+1;
-		od;
+		od
 		i:=i+1;
-	od;
-	
+	od
+]
+
+proc victoriavertical(in A : array [0..6)x[0..7); out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando := 1;
+
 	i:=0;
-	
+	{bound 3-i}
+	do i < 3 ->
+		j:=0;
+		{bound 7-j}
+		do j < 7 /\ jugando=1 ->
+			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			fi;
+			j:=j+1;
+		od
+		i:=i+1;
+	od
+]
+proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando := 1;
+
+	i:=0:
+	{bound 3-i}
 	do i < 3 ->
 		j:=0;
 		{bound 7-j}
@@ -191,25 +259,14 @@ func victoria( A : array [0..6)x[0..7) ) -> (int,int):
 				jugando:=0;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 
-			#Conexion vertical
-			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
-				ganador:=1;
-				jugando:=0;
-			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
-				ganador:=2;
-				jugando:=0;
 			fi;
 			j:=j+1
 		od;
 		i:=i+1;
 	od
-
-
-
-   >> (ganador,jugando)
 ]
 
-proc Inicio(A: array [0..6)x[0..7) of int)-> A: array [0..6)x[0..7) of int
+proc Inicio(in A: array [0..6)x[0..7) of int; out A: array [0..6)x[0..7) of int)
 [
    	VAR:
 	A : array [0..6)x[0..7) of int;
@@ -226,7 +283,7 @@ proc Inicio(A: array [0..6)x[0..7) of int)-> A: array [0..6)x[0..7) of int
 		i:=i+1;
 	od
 
-proc otrapartida(jugando:int)-> bool
+proc otrapartida(in jugando:int; out jugardenuevo: bool)
 [
 	CONST:
 	jugando:int;
@@ -245,7 +302,7 @@ proc otrapartida(jugando:int)-> bool
 
 
 ]
-proc resultados(ganador:int) -> G: array [0..2) of int
+proc resultados(in ganador:int; out G: array [0..2) of int) 
 {Pre: ganador==0 \/ ganador==1 \/ ganador==2}
 {Post:}
 [
