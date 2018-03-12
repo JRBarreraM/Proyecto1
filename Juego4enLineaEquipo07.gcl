@@ -13,44 +13,55 @@
 [
    VAR
 	A : array [0..6)x[0..7) of int;
-	jugando : int;
+	jugando : bool;
 	turno : int;
 	jugador : int;
 	juega : int;
 	ganador : int;
 	 
-   { %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
+	{ %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
 
-	jugando,turno,ganador,juega:=1,1,0,3
-	{bound jugando?}
-	do jugando=1 ->
+	jugando,turno,ganador,juega:=True,1,0,3
+	{bound 43 - turno}
+	do jugando ->
 		if turno = 42 ->
 			jugando:=0
 		[] turno < 42 ->
-			if juega mod 2 != 0 ->
-				juega1;
-			[] juega mod 2 = 0 ->
-				juega2;
+			if juega ->
+				abandonar();
+					jugadaUser(A,i,j);
+
+			[] ¬juega ->
+				juegaIA(A);
 			turno := turno+1
-			juega := juega+1
+			juega := ¬juega
 			fi
 		fi
 	od
 
 	if ganador = 0 ->
-		juega := 2 
+		juega := False 
 	[] ganador = 1 ->
-		juega := 3
+		juega := True
 	[] ganador = 2 ->
-		juega := 2
+		juega := True
 
 
 	  
-   { (%forall i: 0<=i<|S| /\ (i mod 2 = 0): 
-        esprimo(S[i]) /\ (S[i] < M) /\ (N mod (%pi: 0<=i<S[i+1] : S[i]) = 0) /\ S[i+1] = cuantoDivide(S[i],N)) }
+   { }
 ]
 
-func jugada1( A : array [0..6)x[0..7), i : int , j : int) -> A : array [0..6)x[0..7)
+func abandonar(i : int) -> 
+{ Pre: True }
+{ Post: i=0  => jugado=False /\ ganador=2 }
+[
+			if i = 9 /\ j = 9 ->
+			jugando := False;
+			ganador := 2;
+			fi
+]
+
+func jugadaUser( A : array [0..6)x[0..7); i : int ; j : int)-> A : array [0..6)x[0..7);
 { Pre: True }
 { Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
 [
@@ -65,13 +76,9 @@ func jugada1( A : array [0..6)x[0..7), i : int , j : int) -> A : array [0..6)x[0
 			A[i][j] := 1
 		[] valida(i,j) ->
 			skip
-		[] i = 9 /\ j = 9 ->
-			jugando := 0;
-			ganador := 2;
-	>> A,ganador,jugando
+]
 
-
-func jugada2( A : array [0..6)x[0..7), nivel : int ) -> A : array [0..6)x[0..7)
+func jugadaIA( A : array [0..6)x[0..7); nivel : int ) -> A : array [0..6)x[0..7)
 { Pre: nivel = 2 \/ nivel = 1 }
 { Post:  (valida(i,j) => A[i][j] = 2]) /\ (valida(i,j) => A[i][j] = 0) }
 [
