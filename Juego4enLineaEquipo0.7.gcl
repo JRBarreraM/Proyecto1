@@ -368,3 +368,139 @@ proc resultados(in ganador:int; out G: array [0..2) of int)
 		G[2]:=G[2]+1;
 	fi
 ]
+
+proc abandonar(in irse: bool;in-out jugando: bool)
+{Pre True}
+{Post irse=>jugando=False /\ not irse=>jugando=True}
+	#este procedimiento toma la decision del usuario, reflejada en la constante irse
+	#y modifica el valor de jugando para terminar o continuar la partida
+[
+	if irse->
+		jugando:=False;
+	[] not irse->
+		skip;
+	fi
+]
+
+proc terminar(in terminar: bool; out dentro: bool)
+{Pre True}
+{Post terminar=>dentro=False /\ not terminar=>dentro=True}
+	#este procedimiento toma la decision del usuario, reflejada en la constante terminar
+	#y modifica el valor de dentro para salirse o no del programa 
+
+	if terminar->
+		dentro:=False;
+	[] not terminar->
+		skip;
+	fi
+]
+
+proc primera(in-out A: array [0..6)x[0..7) of int ; out i,j : int)
+{Pre: True}
+{Post: i=5 /\ ((A[5][3]=2 /\ j=3) \/ (A[5][2]=2 /\ j=2))}
+[
+	VAR
+	i,j : int;
+	
+	if valida(5,3)->
+		A[5][3]:=2
+		i,j:=5,3;
+	[] not valida(5,3)->
+		A[5][2]:=2
+		i,j:=5,2;
+	fi
+]
+
+proc IA(in i,j : int ; in-out A: array [0..6)x[0..7) of int)
+{Pre}
+{Post}
+[
+	VAR:
+	x,y:int;
+	max:int;
+	hi,hd,vi,vd,dp,dpi,dsi,dsp: int;
+
+	hi,hd,vi,vs,dp,dpi,dsi,dsp:=0,0,0,0,0,0,0,0;
+	
+	x,y:=i,j
+	i:=1
+	do i<4 /\ valida(x+i,y+i)->
+		dps:= dps+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x-i,y-i)->
+		dpi:= dpi+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y+i)->
+		hd:= hd+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y-i)->
+		hi:= hi+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y)->
+		vs:= vs+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ if valida(x-i,y+i)->
+		dss:= dss+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y-i)->
+		dsi:= dsi+1;
+		i:=i+1;
+	od
+
+	max:=max(hi,hd,vs,dp,dpi,dsi,dsp)
+		if max=0->
+			i,j:=5,6;
+			{bound i}
+			do 0 <= i < 6->
+			{bound j}
+				do  0 <= j < 7 ->
+					if valida(i,j) ->
+						A[i][j]:=2;
+					[] !valida(i,j) ->
+						skip
+					fi
+					j:=j-1
+				od
+				i:=i-1
+			od
+			
+		[] max=hi->
+			A[x][y-1]:=2;
+		[] max=hd->
+			A[x][y+1]:=2;
+		[]max=vs->
+			A[x][y+1]:=2;
+		[]max=dp->
+			A[x][y+1]:=2;
+		[]max=dpi->
+			A[x][y+1]:=2;
+		[]max=dsi->
+			A[x][y+1]:=2;
+		[]max=dsp->
+			A[x][y+1]:=2;
+		fi
+]
