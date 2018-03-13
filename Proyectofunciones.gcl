@@ -24,118 +24,83 @@ proc terminar(in terminar: bool; out dentro: bool)
 	fi
 ]
 
+proc primera(in-out A: array [0..6)x[0..7) of int ; out i,j : int)
+{Pre: True}
+{Post: i=5 /\ ((A[5][3]=2 /\ j=3) \/ (A[5][2]=2 /\ j=2))}
+[
+	VAR
+	i,j : int;
+	
+	if valida(5,3)->
+		A[5][3]:=2
+		i,j:=5,3;
+	[] not valida(5,3)->
+		A[5][2]:=2
+		i,j:=5,2;
+	fi
+]
 
-proc fumado(IA2)(in-out A: array [0..6)x[0..7) of int)
+proc IA(in i,j : int ; in-out A: array [0..6)x[0..7) of int)
 {Pre}
 {Post}
 [
 	VAR:
-	P: array [0..7)x[0..7) of int;
-	J: array [0..7)x[0..3) of int;
-	x,y: int;
+	x,y:int;
 	max:int;
 	hi,hd,vi,vd,dp,dpi,dsi,dsp: int;
 
-
-
 	hi,hd,vi,vs,dp,dpi,dsi,dsp:=0,0,0,0,0,0,0,0;
-	i,j,x,y:=5,6,-1,-1;
-	{bound i}
-	do 0 <= i < 6 /\ x=-1 /\ y=-1 ->
-		{bound j}
-		do  0 <= j < 7 /\ x=-1 /\ y=-1 ->
-			if valida(i,j) ->
-				x,y := i,j;
-			[] !valida(i,j) ->
-				skip
-			fi
-			j:=j-1
-		od
-			i:=i-1
-	od
-	i:=1;	
-	do i<4-> 	
-		if valida(x+i,y+i)->
-			dps:= dps+1;
-		[] not valida(x+i,y+i)->
-			skip;
-		fi
+	
+	x,y:=i,j
+	i:=1
+	do i<4 /\ valida(x+i,y+i)->
+		dps:= dps+1;
 		i:=i+1;
 	od
 
 	i:=1;
-	do i<4-> 	
-		if valida(x-i,y-i)->
-			dpi:= dpi+1;
-		[] not valida(x-i,y-i)->
-			skip;
-		fi
+	{bound 4-i}
+	do i<4 /\ valida(x-i,y-i)->
+		dpi:= dpi+1;
 		i:=i+1;
 	od
 	
-	i:=1
-	do i<4-> 	
-		if valida(x,y+i)->
-			hd:= hd+1;
-		[] not valida(x,y+i)->
-			skip;
-		fi
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y+i)->
+		hd:= hd+1;
 		i:=i+1;
 	od
 	
-	i:=1
-	do i<4-> 	
-		if valida(x,y-i)->
-			hi:= hi+1;
-		[] not valida(x,y-i)->
-			skip;
-		fi
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y-i)->
+		hi:= hi+1;
 		i:=i+1;
 	od
 
-	i:=1
-	do i<4-> 	
-		if valida(x+i,y)->
-			vs:= vs+1;
-		[] not valida(x+i,y)->
-			skip;
-		fi
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y)->
+		vs:= vs+1;
 		i:=i+1;
 	od
-
 	
-	i:=1
-	do i<4-> 	
-		if valida(x-i,y)->
-			vi:= vi+1;
-		[] not valida(x-i,y)->
-			skip;
-		fi
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ if valida(x-i,y+i)->
+		dss:= dss+1;
 		i:=i+1;
 	od
 
-	
-	i:=1
-	do i<4-> 	
-		if valida(x-i,y+i)->
-			dss:= dss+1;
-		[] not valida(x-i,y+1)->
-			skip;
-		fi
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y-i)->
+		dsi:= dsi+1;
 		i:=i+1;
 	od
 
-	i:=1
-	do i<4-> 	
-		if valida(x+i,y-i)->
-			dsi:= dsi+1;
-		[] not valida(x+i,y-1)->
-			skip;
-		fi
-		i:=i+1;
-	od
-
-	max:=max(hi,hd,vi,vs,dp,dpi,dsi,dsp)
+	max:=max(hi,hd,vs,dp,dpi,dsi,dsp)
 		if max=0->
 			i,j:=5,6;
 			{bound i}
@@ -154,18 +119,19 @@ proc fumado(IA2)(in-out A: array [0..6)x[0..7) of int)
 			
 		[] max=hi->
 			A[x][y-1]:=2;
-			
 		[] max=hd->
 			A[x][y+1]:=2;
-		[]
-		[]
-		[]
-		[]
-		[]
-		[]
+		[]max=vs->
+			A[x][y+1]:=2;
+		[]max=dp->
+			A[x][y+1]:=2;
+		[]max=dpi->
+			A[x][y+1]:=2;
+		[]max=dsi->
+			A[x][y+1]:=2;
+		[]max=dsp->
+			A[x][y+1]:=2;
 		fi
-
-	
 	
 	
 	
