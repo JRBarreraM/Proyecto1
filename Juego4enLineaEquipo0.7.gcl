@@ -14,7 +14,7 @@
    CONS					# las constantes nos ayudan a tener la informacion que no
    	nombre : str;			# podemos pedir al usuario, su nombre, la dificultad, 
 	nivel : int;			# si desea abandonar una partida, si desea salir del programa,
-	terminar : bool;		# y por supuesto la juga que hara en cada turno reflejada en
+	rendirse : bool;		# y por supuesto la jugada que hara en cada turno reflejada en
 	irse : bool;			# sus coordenadas fila, columna.
 	x : int;
 	y : int;
@@ -328,30 +328,24 @@ proc nuevapartida( in nuevapartida : bool ; out jugando : bool )
 	fi
 ]
 
-proc resultados(in ganador:int; out G: array [0..2) of int) 
+proc resultados(in ganador:int; out G: array [0..2) of int , out juega : bool) 
 {Pre: ganador==0 \/ ganador==1 \/ ganador==2}
 {Post: G[0]+G[1]+G[2]=}
 [
 	VAR:
 	ganador:int;
-	G: array [0..2) of int;				# esto se muestra al usuario mientras
+	G: array [0..2) of int;				# la tabla de resultados se muestra al usuario
 							# mientras no esta jugando
 	if ganador=0->
 		G[0]:=G[0]+1;
 		juega := False;
 	[] ganador=1->
 		G[1]:=G[1]+1;
-		juega =
+		juega := True;
 	[] ganador=2->
 		G[2]:=G[2]+1;
+		juega := True;
 	fi
-				if ganador = 0 ->
-				juega := False; 
-			[] ganador = 1 ->
-				juega := True;
-			[] ganador = 2 ->
-				juega := True;
-			fi
 ]
 
 proc abandonar(in irse: bool;in-out jugando: bool)
@@ -367,32 +361,16 @@ proc abandonar(in irse: bool;in-out jugando: bool)
 	fi
 ]
 
-proc terminar(in terminar: bool; in-out dentro: bool)
+proc terminar(in rendirse: bool; in-out dentro: bool)
 {Pre: dentro=True}
-{Post: terminar=>dentro=False /\ not terminar=>dentro=True}
+{Post: rendirse=>dentro=False /\ not rendirse=>dentro=True}
 	#este procedimiento toma la decision del usuario, reflejada en la constante terminar
 	#y modifica el valor dentro para salirse o no del programa 
 
-	if terminar->
+	if rendirse->
 		dentro:=False;
-	[] not terminar->
+	[] not rendirse->
 		skip;
-	fi
-]
-
-proc primera(in-out A: array [0..6)x[0..7) of int ; out i,j : int)
-{Pre: True}
-{Post: i=5 /\ ((A[5][3]=2 /\ j=3) \/ (A[5][2]=2 /\ j=2))}
-[
-	VAR
-	i,j : int;
-	
-	if valida(5,3)->
-		A[5][3]:=2
-		i,j:=5,3;
-	[] not valida(5,3)->
-		A[5][2]:=2
-		i,j:=5,2;
 	fi
 ]
 
@@ -405,7 +383,7 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 	max:int;				# la vi(vertical inferior queda descartada), y tiende a
 	hi,hd,vs,dps,dss: int;			# escoger jugadas horizontales.
 
-	hi,hd,vs,dps,dpi,dss,dsi:=0,0,0,0,0;	
+	hi,hd,vs,dps,dpi,dss,dsi:=0,0,0,0,0,0,0;
 								
 	x:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
 	{bound 4-x}			# linea horizontal hacia la izquierda de su posicion
@@ -428,8 +406,16 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 	fi;
 
 	x:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una	
-	do x<4 /\ valida(i+x,j+x)->	# linea diagonal principal superior (raro pero posible) 
+	{bound 4-x}			# linea diagonal principal superior (raro pero posible)
+	do x<4 /\ valida(i-x,j-x)->	 
 		dps:= dps+1;
+		x:=x+1;
+	od;
+
+	x:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una	
+	{bound 4-x}			# linea diagonal principal inferior (raro pero posible)                
+	do x<4 /\ valida(i+x,j+x)->	 
+		dpi:= dpi+1;
 		x:=x+1;
 	od;
 
