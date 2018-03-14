@@ -16,8 +16,8 @@
 	nivel : int;			# si desea abandonar una partida, si desea salir del programa,
 	terminar : bool;		# y por supuesto la juga que hara en cada turno reflejada en
 	irse : bool;			# sus coordenadas fila, columna.
-	i : int;
-	j : int;
+	x : int;
+	y : int;
    VAR
 	A : array [0..6)x[0..7) of int;		# el tablero de juego
 	jugando : bool;				# en partida
@@ -26,8 +26,8 @@
 	ganador : int;				# el primero en cumplir las condiciones
 	dentro : bool;				# dentro del programa
 	movida : bool;				# permite reintentar hasta hacer una jugada
-	x : int;				# fila jugada de la IA 
-	y : int;				# columna jugada de la IA
+	i : int;				# fila jugada de la IA 
+	j : int;				# columna jugada de la IA
 	 
 	{ %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
 		jugando,turno,ganador,juega,dentro:=False,1,0,True,True;
@@ -38,7 +38,7 @@
 			[] turno < 42 ->
 				if juega ->
 					abandonar(terminar);
-					jugadaUser(A,i,j);
+					jugadaUser(A,x,y);
 				[] ¬juega ->
 					if nivel = 1 ->
 						movida:=True;
@@ -51,12 +51,19 @@
 							[] not valida(A,i,j) ->
 								skip;
 							fi;
-						victoria();
+						od
+						victoria(A,i,j);
 					[] nivel = 2 ->
 						if turno=1 \/ turno=2 ->
-							primera();
+							if valida(5,3)->
+								A[5][3]:=2
+								i,j:=5,3;
+							[] not valida(5,3)->
+								A[5][2]:=2
+								i,j:=5,2;
+							fi;
 						[] turno > 2 ->
-							IA();
+							IA(A,i,j);
 							victoria();
 						fi
 					fi
@@ -64,14 +71,6 @@
 				juega := ¬juega
 				fi
 			fi;
-
-			if ganador = 0 ->
-				juega := False; 
-			[] ganador = 1 ->
-				juega := True;
-			[] ganador = 2 ->
-				juega := True;
-			fi
 
 		[] ¬jugando /\ dentro ->							#en menu
 			resultados( ganador );
@@ -85,9 +84,9 @@
 #Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-proc jugadaUser( i : int ; j : int ; in-out : A : array [0..6)x[0..7) of int; out  
+proc jugadaUser( x : int ; y : int ; in-out : A : array [0..6)x[0..7) of int)  
 { Pre: True }
-{ Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
+{ Post:  (valida(x,y)=1 => A[x][y] = 1]) /\ (valida(x,y)=0 => A[x][y] = 0) }
 [
 	VAR
 		ganador : int;
@@ -95,12 +94,13 @@ proc jugadaUser( i : int ; j : int ; in-out : A : array [0..6)x[0..7) of int; ou
 
 		ganador := 0;
 		jugando := 0;
-
-		if valida(i,j) ->
-			A[i][j] := 1;
-			victoria(A,i,j); 
-		[] valida(i,j) ->
-			skip
+		
+		do 		
+			if valida(x,y) ->
+				A[x][y] := 1;
+				victoria(A,x,y); 
+			[] not valida(i,j) ->
+				skip
 	>> A
 ]
 
@@ -338,11 +338,20 @@ proc resultados(in ganador:int; out G: array [0..2) of int)
 							# mientras no esta jugando
 	if ganador=0->
 		G[0]:=G[0]+1;
+		juega := False;
 	[] ganador=1->
 		G[1]:=G[1]+1;
+		juega =
 	[] ganador=2->
 		G[2]:=G[2]+1;
 	fi
+				if ganador = 0 ->
+				juega := False; 
+			[] ganador = 1 ->
+				juega := True;
+			[] ganador = 2 ->
+				juega := True;
+			fi
 ]
 
 proc abandonar(in irse: bool;in-out jugando: bool)
