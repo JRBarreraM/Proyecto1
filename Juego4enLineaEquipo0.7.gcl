@@ -26,7 +26,8 @@
 	ganador : int;				# el primero en cumplir las condiciones
 	dentro : bool;				# dentro del programa
 	movida : bool;				# permite reintentar hasta hacer una jugada
-	
+	x : int;				# fila jugada de la IA 
+	y : int;				# columna jugada de la IA
 	 
 	{ %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
 		jugando,turno,ganador,juega,dentro:=False,1,0,True,True;
@@ -36,9 +37,8 @@
 				jugando:=0
 			[] turno < 42 ->
 				if juega ->
-					abandonar();
+					abandonar(terminar);
 					jugadaUser(A,i,j);
-					victoria();
 				[] ¬juega ->
 					if nivel = 1 ->
 						movida:=True;
@@ -85,7 +85,7 @@
 #Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-func jugadaUser( A : array [0..6)x[0..7) of int; i : int ; j : int)-> array [0..6)x[0..7) of int;
+proc jugadaUser( i : int ; j : int ; in-out : A : array [0..6)x[0..7) of int; out  
 { Pre: True }
 { Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
 [
