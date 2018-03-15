@@ -250,7 +250,7 @@ proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int;
 				ganador:=1;
 				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
-			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
+			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2 ->
 				ganador:=2;
 				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
