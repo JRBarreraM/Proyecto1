@@ -433,7 +433,7 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 
 	x:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
 	{bound 4-x}			# linea diagonal secundaria superior (raro pero posible)
-	do x<4 /\ if valida(i-x,j+x)->
+	do x<4 /\ valida(i-x,j+x)->
 		dss:= dss+1;
 		x:=x+1;
 	od;
