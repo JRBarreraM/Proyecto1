@@ -131,7 +131,7 @@ func valida( A : array [0..6)x[0..7); i,j : int ) -> bool
 			valida:=False;
 		fi
 	[] i < 0 \/ i > 5 \/ j < 0 \/ j > 6 ->
-		valida:=False
+		valida:=False;
 	fi
 
 	>> valida
