@@ -8,7 +8,7 @@
 # Autores: 
 #	Br. Jose Barrera y Alfredo Cruz.
 #
-# Ultima m i cacion: 16/03/2018.
+# Ultima modificacion: 16/03/2018.
 
 """
    CONS					# las constantes nos ayudan a tener la informacion que no
@@ -45,7 +45,7 @@
 			resultados( ganador )
 			terminar( irse )
 			if nuevapartida( decision , partida )
-			Inicio(A)
+				Inicio(A)
 	
 		elif jugando :							#en partida
 			if turno = 43 :
@@ -312,13 +312,14 @@ def nuevapartida( decision = bool , partida= int )
 	#se le pregunta al usuario si desea o no volver a jugar o no, esto
 	#se almacena en la variable de entrada decision y cambia el valor
 	#de jugando
+	
 	if decision:
 		jugando=True
 		partida=partida+1
 	elif not decision:
 		pass                  #se sale del juego
 	
-	return(partida,jugando)
+	return(partida,jugando,dentro)
 
 
 def resultados(ganador=int, partida = int)              
@@ -327,7 +328,7 @@ def resultados(ganador=int, partida = int)
 	#VAR:
 	#ganador:int  
 	#G: array [0..2) of int  				# la tabla de resultados se muestra al usuario
-							# mientras no esta jugando
+								# mientras no esta jugando
 	G=(0 for i in range (0,3))
 
 	if partida=1:
@@ -355,9 +356,6 @@ def abandonar( irse= bool, jugando= bool)
 
 	if irse:
 		jugando=False
-	elif not irse:
-		pass
-	
 	return (jugando)
 
 
@@ -370,73 +368,66 @@ def terminar( rendirse= bool, dentro= bool)
 
 	if rendirse:
 		dentro=False
-	elif not rendirse:
-		pass
-
 	return (dentro)	
 	
-
-
 def IA( i=int,j=int , A=() )
 	#Pre: 0<=i<6 and 0<=j<7
 	#Post: 0<=i<6 and 0<=j<7
 
 	#VAR:					# para esta primera version de la IA solo nos interesan
-	#x:int  					# las que puede hacer a partir de la anterior, por lo que
+	#z:int  				# las que puede hacer a partir de la anterior, por lo que
 	#max:int  				# la vi(vertical inferior queda descartada), y tiende a
-	#hi,hd,vs,dps,dss: int  			# escoger jugadas horizontales.
+	#hi,hd,vs,dps,dss: int  		# escoger jugadas horizontales.
 
 	hi,hd,vs,dps,dpi,dss,dsi=0,0,0,0,0,0,0  
 								
-	x=1				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-x			# linea horizontal hacia la izquierda de su posicion
-	while x<4 and valida(i,j-x): 	
+	z=1					# aqui cuenta las 3 proximas posibles jugadas para armar una
+	#cota= 4-z				# linea horizontal hacia la izquierda de su posicion
+	while z<4 and valida(i,j-z): 	
 		hi= hi+1		
 		x=x+1
 
-	x=1				    # aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-x			# linea horizontal hacia la derecha de su posicion
-	while i<4 and valida(i,j+x):
+	z=1				    	# aqui cuenta las 3 proximas posibles jugadas para armar una
+	#cota= 4-z				# linea horizontal hacia la derecha de su posicion
+	while z<4 and valida(i,j+z):
 		hd= hd+1
-		x=x+1
+		z=z+1
 
 	
-	if valida(1+x,j):		# aqui solo se cuenta si la proxima posible jugada para armar una
-		vs = vs+1		    # linea vertical, justo arriba de su posicion
-	elif not valida(1+x,j):
-		pass
+	if valida(1+i,j):			# aqui solo se cuenta si la proxima posible jugada para armar una
+		vs = vs+1		    	# linea vertical, justo arriba de su posicion
 
-	x=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
-	#cota= 4-x				# linea diagonal principal superior (raro pero posible)
-	while x<4 and valida(i-x,j-x):	 
+	z=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
+	#cota= 4-z				# linea diagonal principal superior (raro pero posible)
+	while z<4 and valida(i-z,j-z):	 
 		dps= dps+1
-		x=x+1
+		z=z+1
 
 
-	x=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
-	#cota= 4-x				# linea diagonal principal inferior (raro pero posible)                
-	while x<4 and valida(i+x,j+x):	 
+	z=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
+	#cota= 4-z				# linea diagonal principal inferior (raro pero posible)                
+	while z<4 and valida(i+z,j+z):	 
 		dpi= dpi+1
-		x=x+1
+		z=z+1
 	
 
-	x=1	     			    # aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-x			    # linea diagonal secundaria superior (raro pero posible)
-	while x<4 and valida(i-x,j+x):
+	z=1	     			    # aqui cuenta las 3 proximas posibles jugadas para armar una
+	#cota= 4-z			    # linea diagonal secundaria superior (raro pero posible)
+	while z<4 and valida(i-z,j+z):
 		dss= dss+1
-		x=x+1
+		z=z+1
 
 	
-	x=1				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota=4-x			# diagonal secundaria inferior (raro pero posible)
-	while x<4 and valida(i+x,j-x):
+	z=1				# aqui cuenta las 3 proximas posibles jugadas para armar una
+	#cota=4-z			# diagonal secundaria inferior (raro pero posible)
+	while z<4 and valida(i+z,j-z):
 		dsi= dsi+1
-		x=x+1
+		z=z+1
 	
 
 	max=max(hi,hd,vs,dps,dpi,dss,dsi)  	# buscamos la jugada mas "favorable"
-		if max=0:			# si la pieza se encuentra r eada, se busca un nuevo
-			i,j=5,6		# lugar donde jugar.
+		if max=0:			# si la pieza se encuentra rodeada, se busca un nuevo
+			i,j=5,6			# lugar donde jugar.
 			#cota=i
 			while 0 <= i < 6:
 			#cota= j
@@ -464,7 +455,3 @@ def IA( i=int,j=int , A=() )
 			A[i][j+1]=2
 
 	return (i,j,A)		
-		
-# Se planea mejorar esta IA, para que reconozca si esta r eada de jugadas aliadas o rivales
-# de tal manera que pueda mejorar aun mas su criterio de decision.
-# Posible nivel 3
