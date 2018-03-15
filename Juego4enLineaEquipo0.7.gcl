@@ -336,13 +336,13 @@ proc nuevapartida( in decision : bool ; in-out partida : int ; out jugando : boo
 	fi
 ]
 
-proc resultados(in ganador, partida : int; out G: array [0..2) of int , out juega : bool) 
+proc resultados(in ganador, partida : int; out G: array [0..3) of int , out juega : bool) 
 {Pre: ganador==0 \/ ganador==1 \/ ganador==2}
 {Post: G[0]+G[1]+G[2]= partida-1}
 [
 	VAR:
 	ganador:int;
-	G: array [0..2) of int;				# la tabla de resultados se muestra al usuario
+	G: array [0..3) of int;				# la tabla de resultados se muestra al usuario
 							# mientras no esta jugando
 	if partida=1 ->
 		G[0]:=-1;
