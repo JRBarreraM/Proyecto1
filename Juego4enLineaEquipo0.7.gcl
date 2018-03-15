@@ -89,7 +89,7 @@
 #Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-proc jugadaUser( x : int ; y : int ; in-out : A : array [0..6)x[0..7) of int)  
+proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of int)  
 { Pre: True }
 { Post:  (valida(x,y)=1 => A[x][y] = 1]) /\ (valida(x,y)=0 => A[x][y] = 0) }
 [
