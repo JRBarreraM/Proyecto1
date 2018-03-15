@@ -166,27 +166,27 @@ proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out gan
 [
 	VAR
     	ganador : int;
-		jugando : int;
+		jugando : bool;
 		i : int;
 		j : int;
 
-	jugando := 1;
+	jugando := True;
 
 	i:=0;
 	{bound 6-i}
 	do i < 3 ->
 		j:=0;
 		{bound 4-j}
-		do j < 4 /\ jugando=1 ->
+		do j < 4 /\ jugando=True ->
 			#Conexion diagonal principal
 			if A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1 ->
 				ganador:=1;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			
 			[] A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2 ->
 				ganador:=2;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			fi
 			j:=j+1;
@@ -201,26 +201,26 @@ proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:i
 [
 	VAR
     	ganador : int;
-		jugando : int;
+		jugando : bool;
 		i : int;
 		j : int;
 
-	jugando,i := 1,0;
+	jugando,i := True,0;
 
 	{bound 6-i}
 	do i<6->
 		j:=0;
 		{bound 4-j}
-		do j<4 and jugando=1->
+		do j<4 /\ jugando=True->
 			#Conexion horizontal
-			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1 ->
+			if A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1 ->
 				ganador:=1;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 
 			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=2 ->
 				ganador:=2;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			fi
 			j:=j+1;
@@ -235,24 +235,24 @@ proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int;
 [
 	VAR
     	ganador : int;
-		jugando : int;
+		jugando : bool;
 		i : int;
 		j : int;
 
-	jugando, i := 1,0;
+	jugando, i := True,0;
 
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
 		{bound 7-j}
-		do j < 7 /\ jugando=1 ->
+		do j < 7 /\ jugando=True ->
 			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
 				ganador:=1;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
 				ganador:=2;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 			fi;
 			j:=j+1;
@@ -267,26 +267,26 @@ proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); in i,j : int; out ga
 [
 	VAR
     	ganador : int;
-		jugando : int;
+		jugando : bool;
 		i : int;
 		j : int;
 
-	jugando, i := 1, 0;
+	jugando, i := True, 0;
 
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
 		{bound 7-j}
-		do j < 7 /\ jugando=1 ->
+		do j < 7 /\ jugando=True ->
 			#Conexion diagonal secundaria
 			if j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=1 ->
 				ganador:=1;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 
 			[] j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=2 ->
 				ganador:=2;
-				jugando:=0;
+				jugando:=False;
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
 
 			fi;
