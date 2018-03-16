@@ -81,7 +81,7 @@ reloj = pygame.time.Clock()
 				print("Hasta luego!")
 	
 		else :									#en partida
-			if turno = 43 :
+			if turno == 43 :
 				jugando=False					# el tablero se encuentra lleno, se declara empate
 				ganador=0
 			elif turno < 43 :								
@@ -94,7 +94,7 @@ reloj = pygame.time.Clock()
 						jugando = False
 						ganador = 0
 				elif not(juegauser) :
-					if nivel = 1 :					# el nivel 1 hace un random de todas las
+					if nivel == 1 :					# el nivel 1 hace un random de todas las
 						movida = True  				# las coordenadas del tablero hasta 
 						while movida:				# encontrar una jugada valida
 							i = random.randrange(6)		
@@ -104,8 +104,8 @@ reloj = pygame.time.Clock()
 								movida = False		# momento en el que se rompe el ciclo
 						victoria(A,i,j,jugando,ganador)  
 					
-					elif nivel = 2 :				# el nivel 2 presenta una sencilla IA
-						if turno=1 or turno=2 :			# que lo hace apenas mas complejo
+					elif nivel == 2 :				# el nivel 2 presenta una sencilla IA
+						if turno==1 or turno==2 :		# que lo hace apenas mas complejo
 							if valida(A,5,3):		
 								A[5][3]=2		# se le da una jugada inicial predefinida
 								i,j=5,3 				
@@ -126,13 +126,13 @@ reloj = pygame.time.Clock()
 # todos los procedimientos que llama.
 
 def resultados(G=array of array) -> array of array
-	if ganador=0:
+	if ganador==0:
 		G[0]=G[0]+1
 		juegauser = False
-	elif ganador=1:
+	elif ganador==1:
 		G[1]=G[1]+1
 		juegauser = True
-	elif ganador=2:
+	elif ganador==2:
 		G[2]=G[2]+1
 		juegauser = True
 	print(G)
@@ -162,12 +162,12 @@ def valida( A = array of array, i=int, j=int ) -> bool
 		#valida : bool  
 	
 	if 0 <= i < 6 and 0 <= j < 7: 
-		if A[i][j]=0:
-			if i=5:
+		if A[i][j]==0:
+			if i==5:
 				valida=True
 			elif i<5 and A[i-1][j]!=0:
 				valida=True
-			elif i<5 and A[i-1][j]=0:
+			elif i<5 and A[i-1][j]==0:
 				valida=False
 			
 		else A[i][j]!=0:
@@ -210,9 +210,9 @@ def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganado
 	while i < 3:
 		j=0
 		#cota= 4-j
-		while j < 4 and jugando=True:
+		while j < 4 and jugando==True:
 			#Conexion diagonal principal
-			if A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1:
+			if A[i][j]==A[i+1][j+1]==A[i+2][j+2]==A[i+3][j+3]==1:
 				ganador=1
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -222,7 +222,7 @@ def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganado
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 			
-			elif A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2:
+			elif A[i][j]==A[i+1][j+1]==A[i+2][j+2]==A[i+3][j+3]==2:
 				ganador=2
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -253,7 +253,7 @@ def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> 
 		#cota=4-j}
 		while j<4 and jugando=True:
 			#Conexion horizontal
-			if A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1:
+			if A[i][j]==A[i][j+1]==A[i][j+2]==A[i][j+3]==1:
 				ganador=1
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -263,7 +263,7 @@ def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> 
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 
-			elif A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=2:
+			elif A[i][j]==A[i][j+1]==A[i][j+2]==A[i][j+3]==2:
 				ganador=2
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -293,7 +293,7 @@ def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (b
 		j=0
 		#cota= 7-j
 		while j < 7 and jugando=1:
-			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1:
+			if A[i][j]==A[i+1][j]==A[i+2][j]==A[i+3][j]==1:
 				ganador=1
 				jugando=0
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -302,7 +302,7 @@ def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (b
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
-			elif A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
+			elif A[i][j]==A[i+1][j]==A[i+2][j]==A[i+3][j]==2:
 				ganador=2
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -332,7 +332,7 @@ def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganad
 		#cota=7-j
 		while j < 7 and jugando=True:
 			#Conexion diagonal secundaria
-			if j>2 and A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=1:
+			if j>2 and A[i][j]==A[i+1][j-1]==A[i+2][j-2]==A[i+3][j-3]==1:
 				ganador=1
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -342,7 +342,7 @@ def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganad
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 				#pygame.draw.circle(pantalla, AMARILLO, evento.pos, 30, 0)
 
-			elif j>2 and A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=2:
+			elif j>2 and A[i][j]==A[i+1][j-1]==A[i+2][j-2]==A[i+3][j-3]==2:
 				ganador=2
 				jugando=False
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
@@ -413,7 +413,7 @@ def IA( A=array of array, i=int, j=int )
 	
 
 	max=max(hi,hd,vs,dps,dpi,dss,dsi)  	# buscamos la jugada mas "favorable"
-		if max=0:			# si la pieza se encuentra rodeada, se busca un nuevo
+		if max==0:			# si la pieza se encuentra rodeada, se busca un nuevo
 			i,j=5,6			# lugar donde jugar.
 			#cota=i
 			while 0 <= i < 6:
@@ -424,31 +424,31 @@ def IA( A=array of array, i=int, j=int )
 					j=j-1
 				i=i-1
 			
-		elif max=hi:			# la ejecutamos
+		elif max==hi:			# la ejecutamos
 			A[i][j-1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=hd:
+		elif max==hd:
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=vs:
+		elif max==vs:
 			A[i+1][j]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=dps:
+		elif max==dps:
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=dpi:
+		elif max==dpi:
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=dss:
+		elif max==dss:
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-		elif max=dsi:				
+		elif max==dsi:				
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
