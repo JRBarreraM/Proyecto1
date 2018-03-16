@@ -11,101 +11,152 @@
 # Ultima modificacion: 16/03/2018.
 
 """
-   CONS						# las constantes nos ayudan a tener la informacion que no
-   	nombre : str  			# p emos pedir al usuario, su nombre, la di cultad, 
-	nivel : int  			# si desea abandonar una partida, si desea salir del programa,
-	rendirse : bool  		# y por supuesto la jugada que hara en cada turno reflejada en
-	irse : bool  			# sus coordenadas  la, columna.
+   CONS					
+   	nombreusuario : str  		#informacion proporcionada por el usuriario que el programa no modifica:
+	nivel : int  			# su nombre, la dificultad, si desea abandonar una partida, si desea salir
+	new : bool	  		# del programa, y por supuesto la jugada que hara en cada turno reflejada en
+	seguir : bool  			# sus coordenadas  fila, columna.
 	x : int  
 	y : int  
-	N : int  				# Numero de  las 	# estas son las verdaderas constantes del programa
-	M : int  				# Numero de columnas
    VAR
-	A : array [0..N)x[0..M) of int  	# el tablero de juego
+	A : array [0..6)x[0..7) of int  	# el tablero de juego
+	G : array [0..4)	 		# tablero de resultados
 	jugando : bool  			# en partida
 	turno : int  				# contador de los turnos 
-	juega : int  				# a quien le toca jugar(True para user, False para IA)
-	ganador : int  				# el primero en cumplir las condiciones
+	juegauser : int				# a quien le toca jugar(True para user, False para IA)
+	ganador : int  				# el primero en cumplir las condiciones victoria
 	dentro : bool  				# dentro del programa
 	movida : bool  				# permite reintentar hasta hacer una jugada
-	i : int  					#  la jugada de la IA 
-	j : int  					# columna jugada de la IA
+	i : int  				# fila de la jugada de la IA 
+	j : int  				# columna de la jugada de la IA
 	partida : int   			# numero de partidas jugadas en sesion actual
 	bound : int  				# cota que permite que los ciclos terminen
 """	
-	#Precondicion
-	assert( N = 6 and M = 7 )
-		
-	jugando,turno,ganador,juega,dentro,partida:False,1,0,True,True,1	#Incializacion de las variables
-		
+	import pygame				
+	import os				 
+	# CONSTANTES:
+	# Colores que seran usados en el juego
+	NEGRO = (0, 0, 0)
+	BLANCO = (255, 255, 255)
+	ROJO = (255, 0, 0)
+	AZUL = (0, 0, 255)
+	VERDE = (0, 255, 0)
+
+	# Valores necesarias para la pantalla
+	ALTO = 720       # alto de la ventana
+	ANCHO = 1280     # ancho de la ventana
+	FPS = 30         # frames per second
+	
+	# Variables:
+#    pantalla: object    // para el manejo de la interfaz gráfica
+#	 cuenta: object      // para el manejo del tiempo
+#    evento: object      // para capturar los eventos producidos
+#    jugando: bool       // dice si se continua en el juego
+
+# Inicializar la pantalla del juego
+pygame.init()
+os.environ['SDL_VIDEO_CENTERED'] = '1'                  # Centrar la ventana a la hora de abrirse
+pantalla = pygame.display.set_mode((ANCHO, ALTO))       # Configurando la pantalla
+pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pantalla
+reloj = pygame.time.Clock()
+
+# Loop del juego
+	
+	jugando,turno,dentro,ganador,juegauser=False,1,True,0,True	# Incializacion de las variables
+	G=[0]*3								# Victorias [0]Empate, [1]User, [2]IA
+	G[0]=-1
+	A=[[0]*6]*7
 	while dentro :									#en menu
 		if not(jugando) :
-			resultados( ganador )
-			leer_decision()
-			decision=int(input("Desea empezar una nueva partida?(1=si)(0=no)"))
-			if nuevapartida( decision , partida )
-				Inicio(A)
+			resultados(G)
+			new=bool(input("Desea empezar una nueva partida?(False=no)"))
+			if new :
+				nombreusuario=str(input("Coloque su nombre, por favor:"))
+				dificultad=int(input("Seleccione la dificultad:(1=basico,2=medio)"))
+				A=[[0]*6]*7
+			else :
+				dentro=False
+				print("Hasta luego!")
 	
-		elif jugando :								#en partida
+		else :									#en partida
 			if turno = 43 :
-				jugando=0								# el tablero se encuentra lleno, se declara empate
+				jugando=False					# el tablero se encuentra lleno, se declara empate
+				ganador=0
 			elif turno < 43 :								
-				if juega :								# juega=True representa al usuario
-					abandonar(rendirse)  				# en cada turno el usuario debe decidir si sigue la partida actual  
-					jugadaUser(A,x,y)  
-				elif not(juega) :
-					if nivel = 1 :						# el nivel 1 hace un random de todas las
-						movida=True  					# las coordenadas del tablero hasta 
-						while movida:					# encontrar una jugada valida
-							i=random.randrange(6)		
-							j=random.randrange(7)
+				if juegauser :						# juega=True representa al usuario
+					seguir=bool(input("Desea seguir en esta partida?(False=no)"))	# en cada turno el usuario
+					 if seguir :							# debe decidir si sigue 
+						jugadaUser(A)
+						victoria(A,i,j,jugando,ganador)				#la partida actual  
+					  else :
+						jugando = False
+				elif not(juegauser) :
+					if nivel = 1 :					# el nivel 1 hace un random de todas las
+						movida = True  				# las coordenadas del tablero hasta 
+						while movida:				# encontrar una jugada valida
+							i = random.randrange(6)		
+							j = random.randrange(7)
 							if valida(A,i,j) :
 								A[i][j] = 2
-								movida = False			# momento en el que se rompe el ciclo
-						victoria(A,i,j)  
+								movida = False		# momento en el que se rompe el ciclo
+						victoria(A,i,j,jugando,ganador)  
 					
-					elif nivel = 2 :					# el nivel 2 presenta una sencilla IA
+					elif nivel = 2 :				# el nivel 2 presenta una sencilla IA
 						if turno=1 or turno=2 :			# que lo hace apenas mas complejo
-							if valida(5,3):		
-								A[5][3]=2				# se le da una jugada inicial predefinida
+							if valida(A,5,3):		
+								A[5][3]=2		# se le da una jugada inicial predefinida
 								i,j=5,3 				
-							elif not (valida(5,3)):		# y una jugada alternativa
+							elif not (valida(A,5,3)):		# y una jugada alternativa
 								A[5][2]=2
 								i,j=5,2  
 							   
-						elif turno > 2 :				# a partir de una jugada anterior
-							IA(A,i,j)  					# decide que linea deberia jugar
-							victoria(A,i,j)  
+						elif turno > 2 :			# a partir de una jugada anterior
+							IA(A,i,j)  			# decide que linea deberia jugar
+							victoria(A,i,j,jugando,ganador)  
 					 
 				turno = turno + 1
-				juega = not(juega)
-					 
-				   
-			 
+				juegauser = not(juegauser)
+		
    { dentro = False }
 
-#Aqui termina el esqueleto del programa, de aqui en adelante se colocan
-# t os los procedimientos que llama.
+# Aqui termina el esqueleto del programa, de aqui en adelante se colocan
+# todos los procedimientos que llama.
 
-def jugadaUser( x = int , y = int, A = array of array ) -> array of array
-	#Pre: True 
-	# Post:  (valida(x,y)=1 => A[x][y] = 1]) and (valida(x,y)=0 => A[x][y] = 0) 
+def resultados(G=array of array) -> array of array
+	if ganador=0:
+		G[0]=G[0]+1
+		juegauser = False
+	elif ganador=1:
+		G[1]=G[1]+1
+		juegauser = True
+	elif ganador=2:
+		G[2]=G[2]+1
+		juegauser = True
+	print(G)
+	return(G)
+
+def jugadaUser( A = array of array ) -> array of array
+	# Pre: True 
+	# Post:  (valida(x,y)=True => A[x][y] = 1]) 
 		
 	while True :
-		if valida(x,y):
+		x=int(input("Ingrese la fila donde desea jugar:"))
+		y=int(input("Ingrese la columna donde desea jugar:"))
+		if valida(A,x,y):
 			A[x][y] = 1
+			#Dibujar circulo rojo en la posicion correspodiente
 			break
-		else not valida(i,j):							#se pide al usuario que intente otra jugada
+		else not valida(i,j):					#se pide al usuario que intente otra jugada
 			print("Jugada no valida,intenta otra vez")
 	return A
 
 # Esta es la funcion una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
 def valida( A = array of array, i=int, j=int ) -> bool
-	#Pre: True 
-	#Post: valida=((A[i][j]=0)andi=5)\/((A[i][j]=0)andi<5andA[i-1][j]!=0)
-	#VAR:
-	#valida : bool  
+	# Pre: True 
+	# Post: valida=((A[i][j]=0)andi=5)\/((A[i][j]=0)andi<5andA[i-1][j]!=0)
+	# VAR:
+		#valida : bool  
 	
 	if 0 <= i < 6 and 0 <= j < 7: 
 		if A[i][j]=0:
@@ -124,8 +175,8 @@ def valida( A = array of array, i=int, j=int ) -> bool
 	
 	return valida
 		
-def victoria( A= array of array, i=int, j= int) ->   QUIERO QUE SOLO RETORNE JUGANDO
-	#Pre: True  
+def victoria( A= array of array, i=int, j= int, jugando, ganador) -> (bool, int)
+	# Pre: True  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
 
 	victoriahorizontal(A,i,j)  
@@ -137,10 +188,10 @@ def victoria( A= array of array, i=int, j= int) ->   QUIERO QUE SOLO RETORNE JUG
 			if jugando:
 				victoriadiagonalsecundaria(A,i,j)
 	
-	return (ganador,jugando)
+	return jugando, ganador
 
-#Aqui se veri can las distintas condiciones para que un jugador gane el juego formando 4 en raya.
-def victoriadiagonalprincipal( A = array of array,  i,j = int) -> QUIERO QUE SOLO RETORNE JUGANDO
+#Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
+def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool, int)
 	#Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
 	#VAR
@@ -169,9 +220,9 @@ def victoriadiagonalprincipal( A = array of array,  i,j = int) -> QUIERO QUE SOL
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
 			j=j+1
 		i=i+1
-	return (ganador,jugando)
+	return jugando, ganador 
 
-def victoriahorizontal( A = array of array, i=int, j= int) -> QUIERO QUE SOLO RETORNE JUGANDO
+def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
 	#Pre: N = 6 and M = 7        
 	# Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
@@ -200,15 +251,14 @@ def victoriahorizontal( A = array of array, i=int, j= int) -> QUIERO QUE SOLO RE
 				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
 			j=j+1
 		i=i+1
-	return (ganador,jugando)
+	return jugando, ganador
 
 
-def victoriavertical( A = array of array, i=int, j = int)  -> QUIERO QUE SOLO RETORNE JUGANDO
+def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
 	#Pre: N = 6 and M = 7      
 	# Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
-	#VAR
-    	#ganador : int  
+	#VAR 
 		#jugando : bool  
 		#i : int  
 		#j : int  
@@ -231,18 +281,17 @@ def victoriavertical( A = array of array, i=int, j = int)  -> QUIERO QUE SOLO RE
 			
 			j=j+1
 		i=i+1
-	return (ganador,jugando)
+	return jugando, ganador
 
 
-def victoriadiagonalsecundaria( A = array of array, i=int, j=int) -> QUIERO QUE SOLO RETORNE JUGANDO
+def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganador) -> (bool,int)
 	#Pre: N = 6 and M = 7      
 	#Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
-	#VAR
-    #	ganador : int  
-	#	jugando : bool  
-	#	i : int  
-	#	j : int  
+	#VAR 
+	#jugando : bool  
+	#i : int  
+	#j : int  
 
 	jugando, i = True, 0
 
@@ -265,110 +314,22 @@ def victoriadiagonalsecundaria( A = array of array, i=int, j=int) -> QUIERO QUE 
 
 			j=j+1
 		i=i+1
-	return (ganador,jugando)
+	return jugando, ganador
 
-# Aqui culminan las veri caciones de las posibilidades de ganar el juego con un 4 en raya.
+# Aqui culminan las verificaciones de las posibilidades de ganar el juego con un 4 en raya.
 
-def Inicio( A= array of array) 		HAY QUE DEFINIR funciones APARTE PARA EL NOMBRE Y LA DIFICULTAD
-	#Pre: True
-	#Post: (%forall i,j : 0<=i<6 and 0<=j<7 : A[i][j])}
-   	#VAR:
-	#A : array [0..6)x[0..7) of int  
-	#i : int  
-	#j : int  
-	#nombreusuario:"Coloque su nombre, por favor:")  
-	#di cultad:"Seleccione la di cultad:(1=basico,2=medio)"
-
-	i=0
-	#cota= 6-i
-	while i<6:
-		j=0
-		#cota= 7-j
-		while j<7:
-			A[i][j]=0
-			j=j+1
-		i=i+1
-	return (A)	
-
-
-def nuevapartida( decision = bool , partida= int )  -> NO QUIERO TANTOS RETORNOS 
-	#Pre: True
-	#Post:irse=>jugando=False and not irse=>jugando=True
-
-	#se le pregunta al usuario si desea o no volver a jugar o no, esto
-	#se almacena en la variable de entrada decision y cambia el valor
-	#de jugando
-	
-	if decision:
-		jugando=True
-		partida=partida+1
-	elif not decision:
-		pass                  #se sale del juego
-	
-	return(partida,jugando,dentro)
-
-
-def resultados(ganador=int, partida = int) -> NO QUIERO TANTOS RETORNOS 
-	#Pre: True           
-	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
-	#Post: G[0]+G[1]+G[2]= partida-1
-	#VAR:
-	#ganador:int  
-	#G: array [0..2) of int  				# la tabla de resultados se muestra al usuario
-											# mientras no esta jugando
-	G=(0 for i in range (0,3))
-
-	if partida=1:
-		G[0]=-1
-		G[1]=0
-		G[2]=0
-	elif ganador=0:
-		G[0]=G[0]+1
-		juega = False
-	elif ganador=1:
-		G[1]=G[1]+1
-		juega = True
-	elif ganador=2:
-		G[2]=G[2]+1
-		juega = True
-	
-	return(G,juega)
-
-
-def abandonar( irse= bool, jugando= bool )   SE PUEDE DESECHAR
-	#Pre: jugando=True
-	#Post: irse=>jugando=False and not irse=>jugando=True
-	#este procedimiento toma la decision del usuario, reflejada en la constante irse
-	#y m i ca el valor de jugando para terminar o continuar la partida
-
-	if irse:
-		jugando=False
-	return (jugando)
-
-
-def terminar( rendirse= bool, dentro= bool ) SE PUEDE DESECHAR
-	#Pre: dentro=True
-	#Post: rendirse=>dentro=False and not rendirse=>dentro=True
-
-	#este procedimiento toma la decision del usuario, reflejada en la constante terminar
-	#y m i ca el valor dentro para salirse o no del programa 
-
-	if rendirse:
-		dentro=False
-	return (dentro)	
-	
-def IA( i=int, j=int , A=array of array )
+def IA( A=array of array, i=int, j=int )
 	#Pre: 0<=i<6 and 0<=j<7
 	#Post: 0<=i<6 and 0<=j<7
 
 	#VAR:							# para esta version de la IA solo nos interesan las jugadas
 	#z:int  						# que puede hacer a partir de la anterior, por lo que
 	#max:int  						# la vi (vertical inferior queda descartada), y tiende a
-	#hi,hd,vs,dps,dss: int  		# escoger jugadas horizontales.
+	#hi,hd,vs,dps,dss: int  				# escoger jugadas horizontales.
 
-	hi,hd,vs,dps,dpi,dss,dsi=0,0,0,0,0,0,0  
+	hi,hd,vs,dps,dpi,dss,dsi=0,0,0,0,0,0,0
 								
-	z=1						# aqui cuenta las 3 proximas posibles jugadas para armar una
+	z=1					# aqui cuenta las 3 proximas posibles jugadas para armar una
 	#cota= 4-z				# linea horizontal hacia la izquierda de su posicion
 	while z<4 and valida(i,j-z): 	
 		hi= hi+1		
@@ -406,7 +367,7 @@ def IA( i=int, j=int , A=array of array )
 
 	
 	z=1					# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota=4-z			# diagonal secundaria inferior (raro pero posible)
+	#cota=4-z				# diagonal secundaria inferior (raro pero posible)
 	while z<4 and valida(i+z,j-z):
 		dsi= dsi+1
 		z=z+1
@@ -439,4 +400,4 @@ def IA( i=int, j=int , A=array of array )
 		elif max=dsi:				
 			A[i][j+1]=2
 
-	return (i,j,A)
+	return (A,i,j)
