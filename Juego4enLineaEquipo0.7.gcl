@@ -45,7 +45,7 @@
 		
 		[] jugando /\ dentro ->						#en partida
 			if turno = 42 ->
-				jugando:=0
+				jugando:=False;
 			[] turno < 42 ->
 				if juega ->
 					abandonar(rendirse);
@@ -95,10 +95,10 @@ proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of 
 [
 	VAR
 		ganador : int;
-		jugando : int;
+		jugando : bool;
 
 		ganador := 0;
-		jugando := 0;
+		jugando := False;
 		
 		do 		
 			if valida(x,y) ->
@@ -106,7 +106,6 @@ proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of 
 				victoria(A,x,y); 
 			[] not valida(i,j) ->			#se pide al usuario que intente otra jugada
 				skip
-	>> A
 ]
 
 # Esta es la funcion una de las funciones mas importantes del programa, sin importar
