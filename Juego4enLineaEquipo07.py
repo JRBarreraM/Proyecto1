@@ -239,8 +239,7 @@ def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganado
 	return jugando, ganador 
 
 def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
-	#Pre: N = 6 and M = 7        
-	# Pre: N = 6 and M = 7  
+	#Pre: N = 6 and M = 7         
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR
     	#ganador : int  
@@ -281,8 +280,7 @@ def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> 
 
 
 def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
-	#Pre: N = 6 and M = 7      
-	# Pre: N = 6 and M = 7  
+	#Pre: N = 6 and M = 7       
 	# Post: (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
 		#jugando : bool  
@@ -319,8 +317,7 @@ def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (b
 	return jugando, ganador
 
 def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganador) -> (bool,int)
-	#Pre: N = 6 and M = 7      
-	#Pre: N = 6 and M = 7  
+	#Pre: N = 6 and M = 7        
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
 	#jugando : bool  
