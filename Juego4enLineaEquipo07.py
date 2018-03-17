@@ -3,7 +3,7 @@
 #
 # DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
 # contra una IA con 2 niveles de di cultad (facil y medio), a traves de la \
-# terminal de la interfaz gra ca.
+# terminal de la interfaz grafica.
 #
 # Autores: 
 #	Br. Jose Barrera y Alfredo Cruz.
