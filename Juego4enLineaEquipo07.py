@@ -124,7 +124,7 @@ reloj = pygame.time.Clock()
 # Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-def resultados(G=array) -> array :
+def resultados(G=array,ganador=) -> array :
 	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
 	#Post: G[0]+G[1]+G[2]= partida-1
 	
