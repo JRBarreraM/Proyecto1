@@ -126,6 +126,9 @@ reloj = pygame.time.Clock()
 # todos los procedimientos que llama.
 
 def resultados(G=array of array) -> array of array
+	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
+	#Post: G[0]+G[1]+G[2]= partida-1
+	
 	if ganador==0:
 		G[0]=G[0]+1
 		juegauser = False
@@ -153,7 +156,7 @@ def jugadaUser( A = array of array ) -> array of array
 			print("Jugada no valida,intenta otra vez")
 	return A
 
-# Esta es la funcion una de las funciones mas importantes del programa, sin importar
+# Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
 def valida( A = array of array, i=int, j=int ) -> bool
 	# Pre: True 
@@ -165,9 +168,9 @@ def valida( A = array of array, i=int, j=int ) -> bool
 		if A[i][j]==0:
 			if i==5:
 				valida=True
-			elif i<5 and A[i-1][j]!=0:
+			elif i<5 and A[i+1][j]!=0:
 				valida=True
-			elif i<5 and A[i-1][j]==0:
+			elif i<5 and A[i+1][j]==0:
 				valida=False
 			
 		else A[i][j]!=0:
@@ -196,7 +199,7 @@ def victoria( A= array of array, i=int, j= int, jugando, ganador) -> (bool, int)
 #Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
 def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool, int)
 	#Pre: N = 6 and M = 7  
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
+	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) 
 	#VAR
     	#ganador : int  
 		#jugando : bool  
@@ -238,7 +241,7 @@ def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganado
 def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
 	#Pre: N = 6 and M = 7        
 	# Pre: N = 6 and M = 7  
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
+	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR
     	#ganador : int  
 		#jugando : bool  
@@ -280,7 +283,7 @@ def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> 
 def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
 	#Pre: N = 6 and M = 7      
 	# Pre: N = 6 and M = 7  
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
+	# Post: (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
 		#jugando : bool  
 		#i : int  
@@ -318,7 +321,7 @@ def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (b
 def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganador) -> (bool,int)
 	#Pre: N = 6 and M = 7      
 	#Pre: N = 6 and M = 7  
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
+	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
 	#jugando : bool  
 	#i : int  
@@ -372,7 +375,7 @@ def IA( A=array of array, i=int, j=int )
 	#cota= 4-z				# linea horizontal hacia la izquierda de su posicion
 	while z<4 and valida(i,j-z): 	
 		hi= hi+1		
-		x=x+1
+		z=z+1
 
 	z=1				    	# aqui cuenta las 3 proximas posibles jugadas para armar una
 	#cota= 4-z				# linea horizontal hacia la derecha de su posicion
