@@ -40,8 +40,8 @@
 		do ¬jugando /\ dentro ->					#en menu
 			resultados( ganador );
 			terminar( irse );
-			if nuevapartida( decision , partida );
-			Inicio(A);
+			if nuevapartida( decision , partida )->
+				Inicio(A);
 		
 		[] jugando /\ dentro ->						#en partida
 			if turno = 42 ->
@@ -105,10 +105,11 @@ proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of 
 				A[x][y] := 1;
 				victoria(A,x,y); 
 			[] not valida(i,j) ->			#se pide al usuario que intente otra jugada
-				skip
+				skip;
+		od		
 ]
 
-# Esta es la funcion una de las funciones mas importantes del programa, sin importar
+# Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
 func valida( A : array [0..6)x[0..7); i,j : int ) -> bool
 { Pre: True }
@@ -121,9 +122,9 @@ func valida( A : array [0..6)x[0..7); i,j : int ) -> bool
 		if A[i][j]=0 ->
 			if i=5 ->
 				valida:=True;
-			[] i<5 /\ A[i-1][j]!=0 ->
+			[] i<5 /\ A[i+1][j]!=0 ->
 				valida:=True;
-			[] i<5 /\ A[i-1][j]=0 ->
+			[] i<5 /\ A[i+1][j]=0 ->
 				valida:=False;
 			fi
 		[] A[i][j]!=0 ->
@@ -158,10 +159,10 @@ proc victoria(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jug
 		skip
 	fi
 ]
-#Aqui se verifican las distintas codiciones para que un jugador gane el juego formando 4 en raya.
+#Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
 proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
 { Pre: N = 6 /\ M = 7  }
-{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+{ Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) }
 [
 	VAR
     	ganador : int;
@@ -196,7 +197,7 @@ proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out gan
 
 proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
 { Pre: N = 6 /\ M = 7  }
-{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+{ Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) }
 [
 	VAR
     	ganador : int;
@@ -230,7 +231,7 @@ proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:i
 
 proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
 { Pre: N = 6 /\ M = 7  }
-{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+{ Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) }
 [
 	VAR
     	ganador : int;
@@ -262,7 +263,7 @@ proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int;
 
 proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
 { Pre: N = 6 /\ M = 7  }
-{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+{ Post: (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) }
 [
 	VAR
     	ganador : int;
