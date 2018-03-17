@@ -8,7 +8,7 @@
 # Autores: 
 #	Br. Jose Barrera y Alfredo Cruz.
 #
-# Ultima modificacion: 16/03/2018.
+# Ultima modificacion: 07/04/2018.
 
 """
    CONS					
