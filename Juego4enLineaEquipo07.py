@@ -29,7 +29,6 @@
 	movida : bool  				# permite reintentar hasta hacer una jugada
 	i : int  				# fila de la jugada de la IA 
 	j : int  				# columna de la jugada de la IA
-	partida : int   			# numero de partidas jugadas en sesion actual
 	bound : int  				# cota que permite que los ciclos terminen
 """	
 	import pygame				
@@ -124,9 +123,9 @@ reloj = pygame.time.Clock()
 # Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-def resultados(G=array,ganador=) -> array :
+def resultados(G=array,ganador=int,juegauser=bool) -> (array,ganador,juegauser) :
 	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
-	#Post: G[0]+G[1]+G[2]= partida-1
+	#Post: True
 	
 	if ganador==0:
 		G[0]=G[0]+1
@@ -138,7 +137,7 @@ def resultados(G=array,ganador=) -> array :
 		G[2]=G[2]+1
 		juegauser = True
 	print(G)
-	return(G)
+	return(G,ganador,juegauser)
 
 def jugadaUser( A = array ) -> array :
 	# Pre: True 
