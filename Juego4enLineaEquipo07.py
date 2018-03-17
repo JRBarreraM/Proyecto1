@@ -66,7 +66,6 @@ reloj = pygame.time.Clock()
 	jugando,turno,dentro,ganador,juegauser=False,1,True,0,True	# Incializacion de las variables
 	G=[0]*3								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
 	G[0]=-1
-	A=[[0]*6]*7							#Crear tablero de juego
 	while dentro :									#en menu
 		if not(jugando) :
 			resultados(G)
@@ -74,7 +73,7 @@ reloj = pygame.time.Clock()
 			if new :
 				nombreusuario=str(input("Coloque su nombre, por favor:"))
 				dificultad=int(input("Seleccione la dificultad:(1=basico,2=medio)"))
-				A=[[0]*6]*7				#Crear tablero de juego
+				A=[[6]*7 for i in range(6)]			#Crear tablero de juego
 				dibujartableronuevo()
 			else :
 				dentro=False
@@ -125,7 +124,7 @@ reloj = pygame.time.Clock()
 # Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-def resultados(G=array of array) -> array of array
+def resultados(G=array) -> array :
 	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
 	#Post: G[0]+G[1]+G[2]= partida-1
 	
@@ -141,7 +140,7 @@ def resultados(G=array of array) -> array of array
 	print(G)
 	return(G)
 
-def jugadaUser( A = array of array ) -> array of array
+def jugadaUser( A = array ) -> array :
 	# Pre: True 
 	# Post:  (valida(x,y)=True => A[x][y] = 1]) 
 		
@@ -158,7 +157,7 @@ def jugadaUser( A = array of array ) -> array of array
 
 # Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
-def valida( A = array of array, i=int, j=int ) -> bool
+def valida( A = array, i=int, j=int ) -> bool :
 	# Pre: True 
 	# Post: valida=((A[i][j]=0)andi=5)\/((A[i][j]=0)andi<5andA[i-1][j]!=0)
 	# VAR:
@@ -181,7 +180,7 @@ def valida( A = array of array, i=int, j=int ) -> bool
 	
 	return valida
 		
-def victoria( A= array of array, i=int, j= int, jugando, ganador) -> (bool, int)
+def victoria( A= array, i=int, j= int, jugando, ganador) -> (bool, int) :
 	# Pre: True  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
 
@@ -197,7 +196,7 @@ def victoria( A= array of array, i=int, j= int, jugando, ganador) -> (bool, int)
 	return jugando, ganador
 
 #Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
-def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool, int)
+def victoriadiagonalprincipal( A= array, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
 	#Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) 
 	#VAR
@@ -238,7 +237,7 @@ def victoriadiagonalprincipal( A= array of array, i=int, j= int, jugando, ganado
 		i=i+1
 	return jugando, ganador 
 
-def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
+def victoriahorizontal( A= array, i=int, j= int, jugando=bool, ganador=int ) -> (bool,int) :
 	#Pre: N = 6 and M = 7         
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR
@@ -279,7 +278,7 @@ def victoriahorizontal( A= array of array, i=int, j= int, jugando, ganador ) -> 
 	return jugando, ganador
 
 
-def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (bool,int)
+def victoriavertical( A= array, i=int, j= int, jugando=bool, ganador=int ) -> (bool,int) :
 	#Pre: N = 6 and M = 7       
 	# Post: (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
@@ -316,7 +315,7 @@ def victoriavertical( A= array of array, i=int, j= int, jugando, ganador ) -> (b
 		i=i+1
 	return jugando, ganador
 
-def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganador) -> (bool,int)
+def victoriadiagonalsecundaria( A= array, i=int, j= int, jugando=bool, ganador=int) -> (bool,int) :
 	#Pre: N = 6 and M = 7        
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
 	#VAR 
@@ -357,7 +356,7 @@ def victoriadiagonalsecundaria( A= array of array, i=int, j= int, jugando, ganad
 
 # Aqui culminan las verificaciones de las posibilidades de ganar el juego con un 4 en raya.
 
-def IA( A=array of array, i=int, j=int )
+def IA( A=array, i=int, j=int ) -> (A,i,j):
 	#Pre: 0<=i<6 and 0<=j<7
 	#Post: 0<=i<6 and 0<=j<7
 
@@ -452,7 +451,7 @@ def IA( A=array of array, i=int, j=int )
 			A[i][j+1]=2
 			#Dibujar circulo azul en la posicion correspodiente
 			#pygame.draw.circle(pantalla, AZUL, evento.pos, 30, 0)
-	return (A,i,j)
+	return A,i,j
 
 #Funciones referentes a la parte grafica 
 def dibujartableronuevo():
