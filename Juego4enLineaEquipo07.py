@@ -105,8 +105,7 @@ reloj = pygame.time.Clock()
 						GuardarJuego("guardado.txt",actual)
 					seguir=bool(input("Desea seguir en esta partida?(No=False)"))	# en cada turno el usuario
 					 if seguir :							# debe decidir si sigue 
-						jugadaUser(A)
-						victoria(A,i,j,jugando,ganador)				#la partida actual  
+						jugadaUser(A,jugando,ganador)
 					  else :
 						jugando = False
 						ganador = 0
@@ -158,7 +157,7 @@ def resultados(G=list,ganador=int,juegauser=bool) -> (list,ganador,juegauser) :
 	print(G)
 	return(G,ganador,juegauser)
 
-def jugadaUser( A = list ) -> list :
+def jugadaUser( A = list, jugando = bool, ganador = int ) -> (list,bool,int) :
 	# Pre: True 
 	# Post:  (valida(x,y)=True => A[x][y] = 1]) 
 		
@@ -169,9 +168,10 @@ def jugadaUser( A = list ) -> list :
 			A[x][y] = 1
 			#Dibujar circulo rojo en la posicion correspodiente
 			break
-		else not valida(i,j):					#se pide al usuario que intente otra jugada
+		else not valida(x,y):					#se pide al usuario que intente otra jugada
 			print("Jugada no valida,intenta otra vez")
-	return A
+	victoria(A,x,y,jugando,ganador)
+	return A,jugando,ganador
 
 # Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
