@@ -13,23 +13,27 @@
 """
    CONS					
    	nombreusuario : str  		#informacion proporcionada por el usuriario que el programa no modifica:
-	nivel : int  			# su nombre, la dificultad, si desea abandonar una partida, si desea salir
-	partida : int	  		# del programa, y por supuesto la jugada que hara en cada turno reflejada en
-	seguir : bool  			# sus coordenadas  fila, columna.
+	nivel : int  				# su nombre, la dificultad, si desea abandonar una partida, si desea salir
+	partida : int	  			# del programa, y por supuesto la jugada que hara en cada turno reflejada en
+	seguir : bool  				# sus coordenadas  fila, columna.
 	x : int  
 	y : int  
    VAR
-	A : array [0..6)x[0..7) of int  	# el tablero de juego
-	G : array [0..4)	 		# tablero de resultados
+	A : lista  					# el tablero de juego
+	G : list	 				# tablero de resultados
 	jugando : bool  			# en partida
 	turno : int  				# contador de los turnos 
 	juegauser : int				# a quien le toca jugar(True para user, False para IA)
 	ganador : int  				# el primero en cumplir las condiciones victoria
-	dentro : bool  				# dentro del programa
+	dentrodeljuego : bool  				# dentrodeljuego del programa
 	movida : bool  				# permite reintentar hasta hacer una jugada
-	i : int  				# fila de la jugada de la IA 
-	j : int  				# columna de la jugada de la IA
+	i : int  					# fila de la jugada de la IA 
+	j : int  					# columna de la jugada de la IA
 	bound : int  				# cota que permite que los ciclos terminen
+	datospartida: class         # Tiene como atributos nombre, turno, nivel, A, i, j (datos de juego).
+	anterior : datospartida    	# Almacena los valores de juego de una partida anterior
+	actual : datospartida   	# Almacena los valores de juego de la partida en curso
+
 """	
 	import pygame				
 	import os				 
@@ -62,10 +66,10 @@ reloj = pygame.time.Clock()
 
 # Loop del juego
 	
-	jugando,turno,dentro,ganador,juegauser=False,1,True,0,True	# Incializacion de las variables
+	jugando,turno,dentrodeljuego,ganador,juegauser,actual=False,1,True,0,True,datosdejuego()	# Incializacion de las variables
 	G=[0]*3								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
 	G[0]=-1
-	while dentro :									#en menu
+	while dentrodeljuego :									#en menu
 		if not(jugando) :
 			resultados(G)
 			partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=Cualquier Entero"))
@@ -73,18 +77,20 @@ reloj = pygame.time.Clock()
 				nombreusuario=str(input("Coloque su nombre, por favor:"))
 				dificultad=int(input("Seleccione la dificultad:(1=basico,2=medio)"))
 				A=[[0]*7 for i in range(6)]			#Crear tablero de juego
+				jugando=True
 				dibujartableronuevo()
 			elif partida==1:#sobreescribimos las varibles de juego con las de la partida guardada
-				contenido=CargarJuego("guardado.txt")
-				nombre = contenido[0]		#nombre del jugador
-				turno = int(contenido[1])	#turno de la partida en curso
-				nivel = int(contenido[2])	#deficultad de la IA
-				A = (contenido[3])			#tablero de juego
-				i = int(contenido[4])		#fila de la ultima jugada de la IA
-				j = int(contenido[5])		#columna de la ultima jugada de la IA
+				anterior=CargarJuego("guardado.txt")
+				nombre = anterior[0]		#nombre del jugador
+				turno = int(anterior[1])	#turno de la partida en curso
+				nivel = int(anterior[2])	#deficultad de la IA
+				A = (anterior[3])			#tablero de juego
+				i = int(anterior[4])		#fila de la ultima jugada de la IA
+				j = int(anterior[5])		#columna de la ultima jugada de la IA
+				jugando=True
 				dibujartablero()
 			else :
-				dentro=False
+				dentrodeljuego=False
 				print("Hasta luego!")
 	
 		else :									#en partida
@@ -93,10 +99,10 @@ reloj = pygame.time.Clock()
 				ganador=0
 			elif turno < 43 :								
 				if juegauser :						# juega=True representa al usuario
-					actualizacion(anterior,nombre,turno,nivel,A,i,j)	#se actuliza las variables de juego
+					actualizacion(actual,nombre,turno,nivel,A,i,j)	#se actuliza las variables de juego
 					guardar=bool(input("Desea guardar su partida?(No=False)"))
 					if guardar: #escribimos en alrchivo de guardado las variales de juego actuales
-						GuardarJuego("guardado.txt",anterior)
+						GuardarJuego("guardado.txt",actual)
 					seguir=bool(input("Desea seguir en esta partida?(No=False)"))	# en cada turno el usuario
 					 if seguir :							# debe decidir si sigue 
 						jugadaUser(A)
@@ -131,7 +137,7 @@ reloj = pygame.time.Clock()
 				turno = turno + 1
 				juegauser = not(juegauser)
 		
-	assert( dentro = False )
+	assert( dentrodeljuego = False )
 
 # Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
@@ -467,46 +473,47 @@ def IA( A=list, i=int, j=int ) -> (A,i,j):
 
 #Clase que nos almacenar los valores de juego
 
-class valoresdejuego:
+class datosdejuego:
 	nombre="Jose"					#nombre del jugador
 	turno=100						#turno de la partida en curso
 	nivel=2							#deficultad de la IA
 	A=[[0]*7 for i in range(6)]		#tablero de juego
 	i=5								#fila de la ultima jugada de la IA
 	j=3								#columna de la ultima jugada de la IA
-anterior=valoresdejuego()			#estructura donde guardamos los datos de la partida
+actual=datosdejuego()				#estructura donde guardamos los datos de la partida
 
-# Descripcion: Funcion que cada turno actualiza los valores de las variables de juego. 
+# Descripcion: Funcion que cada turno actualiza los valores de las datos de juego. 
 # Parametros:
-def actualizacion(estructura=valoresdejuego,nombre=str,turno=int,nivel=int,A=list,i=int,j=int)->valoresdejuego:
-		anterior.nombre=nombre
-		anterior.turno=turno
-		anterior.nivel=nivel
-		anterior.A=A
-		anterior.i=i
-		anterior.j=j
-		return anterior
+def actualizacion(estructura=datosdejuego,nombre=str,turno=int,nivel=int,A=list,i=int,j=int)->datosdejuego:
+		actual.nombre=nombre
+		actual.turno=turno
+		actual.nivel=nivel
+		actual.A=A
+		actual.i=i
+		actual.j=j
+		return actual
 
 # Descripcion: Funcion que lee el archivo de guardado y almacena su informacion
-#			en una lista para posteriormente sobreescribir las variables de juego. 
+#			en una lista para posteriormente sobreescribir las datos de juego. 
 # Parametros:
 def CargarJuego(archivo=str)->list:
 	with open(archivo,'r+') as f:
-		oldcontenido = f.readlines()
-		contenido = [oldcontenido[i].rstrip() for i in range(6)]
+		old = f.readlines()
+		oldi = [old[i].rstrip() for i in range(6)]
 	f.closed
-	return contenido
+	return oldi
+
 # Descripcion: Funcion que escibe en el archivo de guardado los valores actuales
-#			de las variables de juego(nombre,turno,nivel,A,i,j). 
+#			de las datos de juego(nombre,turno,nivel,A,i,j). 
 # Parametros:
-def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
+def GuardarJuego(archivo=str, estructura=datosdejuego):#no tiene salida
 	with open(archivo,'w') as f:
-		f.write(anterior.nombre+"\n")
-		f.write(str(anterior.turno)+"\n")
-		f.write(str(anterior.nivel)+"\n")
-		f.write(str(anterior.A)+"\n")
-		f.write(str(anterior.i)+"\n")
-		f.write(str(anterior.j))
+		f.write(actual.nombre+"\n")
+		f.write(str(actual.turno)+"\n")
+		f.write(str(actual.nivel)+"\n")
+		f.write(str(actual.A)+"\n")
+		f.write(str(actual.i)+"\n")
+		f.write(str(actual.j))
 	f.closed
 
 #Funciones referentes a la parte grafica 
