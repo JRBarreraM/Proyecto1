@@ -460,7 +460,7 @@ def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 def dibujartableronuevo():        #->void
 	assert(True)
 	#Postcondicion:se dibuja en una ventana grafica un tablero con filas y columnas de color verde
-	   #Cuadrado exterior
+	   	#Cuadrado exterior
         pygame.draw.line(pantalla, VERDE, (130, 90), (130, 620))
         pygame.draw.line(pantalla, VERDE, (1120, 90), (1120, 620))
         pygame.draw.line(pantalla, VERDE, (130, 90), (1120, 90))
@@ -532,7 +532,7 @@ while dentro :									#en menu
 			A=[[0]*7 for i in range(6)]			#Crear tablero de juego
 			jugando=True
 			dibujartableronuevo()
-		if partida==1:       #sobreescribimos las variables de juego con las de la partida guardada
+		elif partida==1:       #sobreescribimos las variables de juego con las de la partida guardada
 			contenido=CargarJuego("guardado.txt")
 			nombre = contenido[0]		#nombre del jugador
 			turno = int(contenido[1])	#turno de la partida en curso
@@ -542,9 +542,9 @@ while dentro :									#en menu
 			j = int(contenido[5])		#columna de la ultima jugada de la IA
 			dibujartablero()
 			jugando=True
-		#else :
-		#	dentro=False
-		#	print("Hasta luego!")
+		else :
+			dentro=False
+			print("Hasta luego!")
 	
 	else :									#en partida
 		if turno == 43 :
