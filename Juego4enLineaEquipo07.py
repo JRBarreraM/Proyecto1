@@ -215,7 +215,7 @@ def victoriahorizontal( A= list, i=int, j= int, jugando=bool, ganador=int ):
 			elif A[i][j]==A[i][j+1]==A[i][j+2]==A[i][j+3]==2:
 				ganador=2
 				jugando=False
-				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]=3,3,3,3
+				A[i][j],A[i][j+1],A[i][j+2],A[i][j]=3,3,3,3
 				#Dibujar circulo amarillo en las posiciones correspodientes
 				pygame.draw.circle(pantalla, AMARILLO,(201 + j*142, 134 + i*88), 30, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+1)*142, 134 + i*88), 30, 0)
@@ -288,8 +288,8 @@ def victoriadiagonalsecundaria( A= list, i=int, j= int, jugando=bool, ganador=in
 				#Dibujar circulo amarillo en las posiciones correspodientes
 				pygame.draw.circle(pantalla, AMARILLO,(201 + j*142, 134 + i*88), 30, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-1)*142, 134 + (i+1)*88), 30, 0)
-				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-2)*142, 134 + (i+1)*88), 30, 0)
-				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-3)*142, 134 + (i+1)*88), 30, 0)
+				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-2)*142, 134 + (i+2)*88), 30, 0)
+				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-3)*142, 134 + (i+3)*88), 30, 0)
 
 			elif j>2 and A[i][j]==A[i+1][j-1]==A[i+2][j-2]==A[i+3][j-3]==2:
 				ganador=2
