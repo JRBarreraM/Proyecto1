@@ -8,7 +8,7 @@
 # Autores: 
 #	Br. Jose Barrera y Alfredo Cruz.
 #
-# Ultima modificacion: 07/04/2018.
+# Ultima modificacion: 06/04/2018.
 
 """
    CONS					
@@ -132,14 +132,13 @@ def victoria(A=list,i=int,j= int,jugando=bool,ganador=int):
 	# Pre: True  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
 
+	victoriahorizontal(A,i,j,jugando,ganador)
 	if jugando:
-		victoriahorizontal(A,i,j,jugando,ganador) 
+		victoriavertical(A,i,j,jugando,ganador)
 		if jugando:
-			victoriavertical(A,i,j,jugando,ganador)
+			victoriadiagonalprincipal(A,i,j,jugando,ganador)
 			if jugando:
-				victoriadiagonalprincipal(A,i,j,jugando,ganador)
-				if jugando:
-					victoriadiagonalsecundaria(A,i,j,jugando,ganador)
+				victoriadiagonalsecundaria(A,i,j,jugando,ganador)
 	
 	return jugando, ganador
 
@@ -525,7 +524,7 @@ G[0]=-1
 while dentro :									#en menu
 	if not(jugando) :
 		resultados(G,ganador,juegauser)
-		partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=Cualquier Entero"))
+		partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=3"))
 		if partida==0:#inicializamos las varibles de juego con las de la partida guardada
 			nombreusuario=str(input("Coloque su nombre, por favor:"))
 			nivel=int(input("Seleccione el nivel:(1=basico,2=medio)"))
@@ -542,7 +541,7 @@ while dentro :									#en menu
 			j = int(contenido[5])		#columna de la ultima jugada de la IA
 			dibujartablero()
 			jugando=True
-		else :
+		elif partida==3:
 			dentro=False
 			print("Hasta luego!")
 	
@@ -559,7 +558,9 @@ while dentro :									#en menu
 				seguir=bool(input("Desea seguir en esta partida?(No=False)"))	# en cada turno el usuario
 				if seguir :							# debe decidir si sigue 
 					jugadaUser(A)
-					victoria(A,i,j,jugando,ganador)				#la partida actual
+					Rvictoria(A,i,j,jugando,ganador)=victoria(A,i,j,jugando,ganador)				#la partida actual
+					jugando=Rvictoria[0]
+					ganador=Rvictoria[1]
 				else:	  
 					jugando = False
 					ganador = 0
@@ -573,7 +574,9 @@ while dentro :									#en menu
 							A[i][j] = 2
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
 							movida = False		# momento en el que se rompe el ciclo
-					victoria(A,i,j,jugando,ganador)  
+					Rvictoria=victoria(A,i,j,jugando,ganador) 
+					jugando=Rvictoria[0]
+					ganador=Rvictoria[1]
 					
 				elif nivel == 2 :				# el nivel 2 presenta una sencilla IA
 					if turno==1 or turno==2 :		# que lo hace apenas mas complejo
