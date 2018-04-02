@@ -1,4 +1,3 @@
-#
 # Juego4enLineaEquipo07.py
 #
 # DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
@@ -132,13 +131,21 @@ def victoria(A=list,i=int,j= int,jugando=bool,ganador=int):
 	# Pre: True  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
 
-	victoriahorizontal(A,i,j,jugando,ganador)
+	Rvictoria=victoriahorizontal(A,i,j,jugando,ganador) 
+	jugando=Rvictoria[0]
+	ganador=Rvictoria[1]
 	if jugando:
-		victoriavertical(A,i,j,jugando,ganador)
+		Rvictoria=victoriavertical(A,i,j,jugando,ganador) 
+		jugando=Rvictoria[0]
+		ganador=Rvictoria[1]
 		if jugando:
-			victoriadiagonalprincipal(A,i,j,jugando,ganador)
+			Rvictoria=victoriadiagonalprincipal(A,i,j,jugando,ganador) 
+			jugando=Rvictoria[0]
+			ganador=Rvictoria[1]
 			if jugando:
-				victoriadiagonalsecundaria(A,i,j,jugando,ganador)
+				Rvictoria=victoriadiagonalsecundaria(A,i,j,jugando,ganador) 
+				jugando=Rvictoria[0]
+				ganador=Rvictoria[1]
 	
 	return jugando, ganador
 
@@ -459,28 +466,28 @@ def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 def dibujartableronuevo():        #->void
 	assert(True)
 	#Postcondicion:se dibuja en una ventana grafica un tablero con filas y columnas de color verde
-	   	#Cuadrado exterior
-        pygame.draw.line(pantalla, VERDE, (130, 90), (130, 620))
-        pygame.draw.line(pantalla, VERDE, (1120, 90), (1120, 620))
-        pygame.draw.line(pantalla, VERDE, (130, 90), (1120, 90))
-        pygame.draw.line(pantalla, VERDE, (130, 620), (1120, 620))
+	#Cuadrado exterior
+	pygame.draw.line(pantalla, VERDE, (130, 90), (130, 620))
+	pygame.draw.line(pantalla, VERDE, (1120, 90), (1120, 620))
+	pygame.draw.line(pantalla, VERDE, (130, 90), (1120, 90))
+	pygame.draw.line(pantalla, VERDE, (130, 620), (1120, 620))
 
-        # Filas
-        pygame.draw.line(pantalla, VERDE, (130, 178), (1120, 178))
-        pygame.draw.line(pantalla, VERDE, (130, 266), (1120, 266))
-        pygame.draw.line(pantalla, VERDE, (130, 354), (1120, 354))
-        pygame.draw.line(pantalla, VERDE, (130, 442), (1120, 442))
-        pygame.draw.line(pantalla, VERDE, (130, 530), (1120, 530))
+    # Filas
+	pygame.draw.line(pantalla, VERDE, (130, 178), (1120, 178))
+	pygame.draw.line(pantalla, VERDE, (130, 266), (1120, 266))
+	pygame.draw.line(pantalla, VERDE, (130, 354), (1120, 354))
+	pygame.draw.line(pantalla, VERDE, (130, 442), (1120, 442))
+	pygame.draw.line(pantalla, VERDE, (130, 530), (1120, 530))
 
-        # Columnas
-        pygame.draw.line(pantalla, VERDE, (272, 90), (272, 620))
-        pygame.draw.line(pantalla, VERDE, (414, 90), (414, 620))
-        pygame.draw.line(pantalla, VERDE, (556, 90), (556, 620))
-        pygame.draw.line(pantalla, VERDE, (698, 90), (698, 620))
-        pygame.draw.line(pantalla, VERDE, (840, 90), (840, 620))
-        pygame.draw.line(pantalla, VERDE, (982, 90), (982, 620))
+    # Columnas
+	pygame.draw.line(pantalla, VERDE, (272, 90), (272, 620))
+	pygame.draw.line(pantalla, VERDE, (414, 90), (414, 620))
+	pygame.draw.line(pantalla, VERDE, (556, 90), (556, 620))
+	pygame.draw.line(pantalla, VERDE, (698, 90), (698, 620))
+	pygame.draw.line(pantalla, VERDE, (840, 90), (840, 620))
+	pygame.draw.line(pantalla, VERDE, (982, 90), (982, 620))
 
-        pygame.display.flip()
+	pygame.display.flip()
 
 def cargarTablero(): #-> 'void':
 	# Precondicion: 
@@ -524,10 +531,31 @@ G[0]=-1
 while dentro :									#en menu
 	if not(jugando) :
 		resultados(G,ganador,juegauser)
-		partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=3"))
+		while True: # Se permite al usuario introducir nuevos datos correctos
+			try: 
+				partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=2)"))
+				assert( partida==0 or partida==2 or partida==1 )
+				break
+			except:
+				print("Partida solo puede valer 0,1 o 2")
+		
 		if partida==0:#inicializamos las varibles de juego con las de la partida guardada
-			nombreusuario=str(input("Coloque su nombre, por favor:"))
-			nivel=int(input("Seleccione el nivel:(1=basico,2=medio)"))
+			while True: # Se permite al usuario introducir nuevos datos correctos
+				try: 
+					nombreusuario=str(input("Coloque su nombre, por favor:"))
+					assert( len(nombreusuario)>0 )
+					break
+				except:
+					print("Coloque al menos un caracter")
+			
+			while True: # Se permite al usuario introducir nuevos datos correctos
+				try: 
+					nivel=int(input("Seleccione el nivel:(1=basico,2=medio)"))
+					assert( nivel==1 or nivel==2 )
+					break
+				except:
+					print("Escoja entre el nivel 1 o 2")
+			
 			A=[[0]*7 for i in range(6)]			#Crear tablero de juego
 			jugando=True
 			dibujartableronuevo()
@@ -545,7 +573,7 @@ while dentro :									#en menu
 			dentro=False
 			print("Hasta luego!")
 	
-	else :									#en partida
+	elif jugando :							#en partida
 		if turno == 43 :
 			jugando=False					# el tablero se encuentra lleno, se declara empate
 			ganador=0
@@ -558,7 +586,7 @@ while dentro :									#en menu
 				seguir=bool(input("Desea seguir en esta partida?(No=False)"))	# en cada turno el usuario
 				if seguir :							# debe decidir si sigue 
 					jugadaUser(A)
-					Rvictoria(A,i,j,jugando,ganador)=victoria(A,i,j,jugando,ganador)				#la partida actual
+					Rvictoria=victoria(A,i,j,jugando,ganador)				#la partida actual
 					jugando=Rvictoria[0]
 					ganador=Rvictoria[1]
 				else:	  
@@ -590,11 +618,13 @@ while dentro :									#en menu
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
 					elif turno > 2 :			# a partir de una jugada anterior
 						IA(A,i,j)  			# decide que linea deberia jugar
-						victoria(A,i,j,jugando,ganador)  
+						Rvictoria=victoria(A,i,j,jugando,ganador) 
+						jugando=Rvictoria[0]
+						ganador=Rvictoria[1]  
 		
-	turno = turno + 1
-	juegauser = not(juegauser)
-	pygame.display.flip() 
+			turno = turno + 1
+			juegauser = not(juegauser)
+			pygame.display.flip() 
 
 
     
