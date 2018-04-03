@@ -629,7 +629,10 @@ while dentro :									#en menu
 							i,j=5,2  
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
 					elif turno > 2 :			# a partir de una jugada anterior
-						IA(A,i,j)  			# decide que linea deberia jugar
+						RIA=IA(A,i,j)
+						A=RIA[0]
+						i=RIA[1]
+						j=RIA[2]  			# decide que linea deberia jugar
 						Rvictoria=victoria(A,i,j,jugando,ganador) 
 						jugando=Rvictoria[0]
 						ganador=Rvictoria[1]  
