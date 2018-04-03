@@ -75,11 +75,10 @@ def resultados(G=list,ganador=int,juegauser=bool):
 	elif ganador==2:
 		G[2]=G[2]+1
 		juegauser = True
+	print("Este el tablero de victorias")
+	print("Empates/Jugador/IA")
 	print(G)
-	return(G,ganador,juegauser)
-
-#def dibujartableronuevo():
-	
+	return(G,ganador,juegauser)	
 
 # Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
@@ -463,7 +462,7 @@ def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 	f.closed
 
 #Funciones referentes a la parte grafica 
-def dibujartableronuevo():        #->void
+def dibujartableronuevo(A=list):        #->void
 	assert(True)
 	#Postcondicion:se dibuja en una ventana grafica un tablero con filas y columnas de color verde
 	#Cuadrado exterior
@@ -487,34 +486,38 @@ def dibujartableronuevo():        #->void
 	pygame.draw.line(pantalla, VERDE, (840, 90), (840, 620))
 	pygame.draw.line(pantalla, VERDE, (982, 90), (982, 620))
 
+	#Numeros Guia
+	fuente = pygame.font.Font(None, 75)
+	I = fuente.render("0", True, VERDE)
+	pantalla.blit(I, [90, 90])
+	pantalla.blit(I, [170, 40])
+	II = fuente.render("1", True, VERDE)
+	pantalla.blit(II, [90, 190])
+	pantalla.blit(II, [330, 40])
+	III = fuente.render("2", True, VERDE)
+	pantalla.blit(III, [90, 280])
+	pantalla.blit(III, [470, 40])
+	IV = fuente.render("3", True, VERDE)
+	pantalla.blit(IV, [90, 380])
+	pantalla.blit(IV, [610, 40])
+	V = fuente.render("4", True, VERDE)
+	pantalla.blit(V, [90, 470])
+	pantalla.blit(V, [750, 40])
+	VI = fuente.render("5", True, VERDE)
+	pantalla.blit(VI, [90, 570])
+	pantalla.blit(VI, [900, 40])
+	VII = fuente.render("6", True, VERDE)
+	pantalla.blit(VII, [1050, 40])	
 	pygame.display.flip()
 
-def cargarTablero(): #-> 'void':
-	# Precondicion: 
-	assert(True)
-	# Fondo
-	pantalla.fill(NEGRO)
-	# Cuadrado exterior
-	pygame.draw.line(pantalla, VERDE, (130, 90), (130, 620))
-	pygame.draw.line(pantalla, VERDE, (1120, 90), (1120, 620))
-	pygame.draw.line(pantalla, VERDE, (130, 90), (1120, 90))
-	pygame.draw.line(pantalla, VERDE, (130, 620), (1120, 620))
+	for i in range(0,6):
+		for j in range(0,7):
+			if A[i][j] != 0:
+				pygame.draw.circle(pantalla, NEGRO, (201 + j*142, 134 + i*88), 30, 0)
 
-	# Filas
-	pygame.draw.line(pantalla, VERDE, (130, 178), (1120, 178))
-	pygame.draw.line(pantalla, VERDE, (130, 266), (1120, 266))
-	pygame.draw.line(pantalla, VERDE, (130, 354), (1120, 354))
-	pygame.draw.line(pantalla, VERDE, (130, 442), (1120, 442))
-	pygame.draw.line(pantalla, VERDE, (130, 530), (1120, 530))
+	pygame.display.flip()
 
-	# Columnas
-	pygame.draw.line(pantalla, VERDE, (272, 90), (272, 620))
-	pygame.draw.line(pantalla, VERDE, (414, 90), (414, 620))
-	pygame.draw.line(pantalla, VERDE, (556, 90), (556, 620))
-	pygame.draw.line(pantalla, VERDE, (698, 90), (698, 620))
-	pygame.draw.line(pantalla, VERDE, (840, 90), (840, 620))
-	pygame.draw.line(pantalla, VERDE, (982, 90), (982, 620))
-
+def cargarTablero(A=list): #-> 'void':
 	for i in range(0,6):
 		for j in range(0,7):
 			if A[i][j] == 1:
@@ -528,9 +531,12 @@ def cargarTablero(): #-> 'void':
 jugando,turno,dentro,ganador,juegauser=False,1,True,0,True	# Incializacion de las variables
 G=[0]*3								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
 G[0]=-1
+i,j=5,3
+A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
 while dentro :									#en menu
 	if not(jugando) :
 		resultados(G,ganador,juegauser)
+
 		while True: # Se permite al usuario introducir nuevos datos correctos
 			try: 
 				partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=2)"))
@@ -539,7 +545,14 @@ while dentro :									#en menu
 			except:
 				print("Partida solo puede valer 0,1 o 2")
 		
+		dibujartableronuevo(A)				#Limpiamos el tablero grafico
+
 		if partida==0:#inicializamos las varibles de juego con las de la partida guardada
+
+			A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
+			jugando=True
+			
+			
 			while True: # Se permite al usuario introducir nuevos datos correctos
 				try: 
 					nombreusuario=str(input("Coloque su nombre, por favor:"))
@@ -556,9 +569,6 @@ while dentro :									#en menu
 				except:
 					print("Escoja entre el nivel 1 o 2")
 			
-			A=[[0]*7 for i in range(6)]			#Crear tablero de juego
-			jugando=True
-			dibujartableronuevo()
 		elif partida==1:       #sobreescribimos las variables de juego con las de la partida guardada
 			contenido=CargarJuego("guardado.txt")
 			nombre = contenido[0]		#nombre del jugador
@@ -567,11 +577,13 @@ while dentro :									#en menu
 			A = (contenido[3])			#tablero de juego
 			i = int(contenido[4])		#fila de la ultima jugada de la IA
 			j = int(contenido[5])		#columna de la ultima jugada de la IA
-			dibujartablero()
+			dibujartableronuevo(A)
+			cargarTablero(A)
 			jugando=True
-		elif partida==3:
+		elif partida==2:
 			dentro=False
 			print("Hasta luego!")
+			pygame.quit()
 	
 	elif jugando :							#en partida
 		if turno == 43 :
