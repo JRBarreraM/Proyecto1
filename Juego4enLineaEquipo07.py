@@ -109,17 +109,20 @@ def valida( A = list, i=int, j=int ):
 def jugadaUser( A = list ):
 	# Pre: True 
 	# Post:  (valida(x,y)=True => A[x][y] = 1]) 
-		
-	while True :
-		x=int(input("Ingrese la fila donde desea jugar:"))
-		y=int(input("Ingrese la columna donde desea jugar:"))
-		if valida(A,x,y):
-			A[x][y] = 1
-			pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
-			#Dibujar circulo rojo en la posicion correspodiente
+	JugadaCorrecta=False
+	while not(JugadaCorrecta) :
+		try:	
+			x=int(input("Ingrese la fila donde desea jugar:"))
+			y=int(input("Ingrese la columna donde desea jugar:"))
+			assert(valida(A,x,y))
 			break
-		else:					#se pide al usuario que intente otra jugada
+		except:
 			print("Jugada no valida,intenta otra vez")
+		
+	A[x][y] = 1
+	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
+	#Dibujar circulo rojo en la posicion correspodiente
+
 	pygame.display.flip()  		
 
 	return A,x,y
