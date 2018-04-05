@@ -73,9 +73,11 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	elif ganador==2:
 		tabv[0][2]=tabv[0][2]+1
 		juegauser = False
+	print("\n","Bienvenido Al Menu","\n")
 	print("Este el tablero de victorias")
 	print("Empates/Jugador/IA")
 	print(tabv)
+	print("\n")
 	return juegauser	
 
 
@@ -106,20 +108,17 @@ def jugadaUser( tabl = list ):
 	# Pre: True 
 	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
-		# JugadaCorrecta : bool
 		# x : int
 		# y : int
-	
-	JugadaCorrecta=False
-	
-	while not(JugadaCorrecta) :
-		try:	
-			x=int(input("Ingrese la fila donde desea jugar:"))
-			y=int(input("Ingrese la columna donde desea jugar:"))
-			assert(valida(tabl,x,y))
+	x=0
+	y=validarcolumnauser()
+	while x<=6 :
+		if valida(tabl,x,y):
 			break
-		except:
-			print("Jugada no valida,intenta otra vez")
+		x+=1
+	if x==7 :
+		print("Jugada no valida,intenta otra vez")
+		jugadaUser(tabl)
 		
 	tabl[x][y] = 1
 	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
@@ -127,6 +126,15 @@ def jugadaUser( tabl = list ):
 
 	return tabl,x,y
 
+def validarcolumnauser():
+	while True:
+		try:
+			y=int(input("Ingrese la columna donde desea jugar:"))
+			assert(0<=y<=6)
+			break		
+		except:
+			print("Columna no valida,intenta otra vez")
+	return y
 
 def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int):
 	# Pre: True  
@@ -589,7 +597,7 @@ while dentro :							# Dentro del juego
 			dibujartableronuevo(tabl)			# Dibujamos un tablero grafico nuevo
 			cargarTablero(tabl)			# Dibujamos las jugadas cargadas del tablero
 			jugando=True				# Salir del Menu entrar en partida
-			jugadaUser=True				# El jugador debe empezar en su turno
+			juegauser=True				# El jugador debe empezar en su turno
 		
 		elif partida==2:	# El jugador decide que quiere salir del juego
 			dentro=False	# Salimos del loop del juego
