@@ -78,8 +78,7 @@ def resultados(G=list,ganador=int,juegauser=bool):
 	print(G)
 	return juegauser	
 
-# Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
-# si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
+
 def valida( A = list, i=int, j=int ):
 	# Pre: True 
 	# Post: valida=((A[i][j]=0)andi=5)\/((A[i][j]=0)andi<5andA[i-1][j]!=0)
@@ -105,8 +104,12 @@ def valida( A = list, i=int, j=int ):
 
 def jugadaUser( A = list ):
 	# Pre: True 
-	# Post:  (valida(x,y)=True => A[x][y] = 1]) 
+	# Post:  (valida(x,y)=True => A[x][y] = 1])
+	# VAR:
+		# JugadaCorrecta : bool
+	
 	JugadaCorrecta=False
+	
 	while not(JugadaCorrecta) :
 		try:	
 			x=int(input("Ingrese la fila donde desea jugar:"))
@@ -128,17 +131,17 @@ def jugadaUser( A = list ):
 		
 def victoria(A=list,i=int,j= int,jugando=bool,ganador=int):
 	# Pre: True  
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0)) 
+	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
 
-	Rvictoria=victoriahorizontal(A,i,j,jugando,ganador) 
+	Rvictoria=victoriahorizontal(A,i,j,jugando,ganador)
 	jugando=Rvictoria[0]
 	ganador=Rvictoria[1]
 	if jugando:
-		Rvictoria=victoriavertical(A,i,j,jugando,ganador) 
+		Rvictoria=victoriavertical(A,i,j,jugando,ganador)
 		jugando=Rvictoria[0]
 		ganador=Rvictoria[1]
 		if jugando:
-			Rvictoria=victoriadiagonalprincipal(A,i,j,jugando,ganador) 
+			Rvictoria=victoriadiagonalprincipal(A,i,j,jugando,ganador)
 			jugando=Rvictoria[0]
 			ganador=Rvictoria[1]
 			if jugando:
@@ -435,8 +438,8 @@ def IA( A=list, i=int, j=int ):
 #Clase que nos almacenar los valores de juego
 
 class valoresdejuego:
-	nombreusuario="Jose"					#nombre del jugador
-	turno=100						#turno de la partida en curso
+	nombreusuario="EAS"					#nombre del jugador
+	turno=1						#turno de la partida en curso
 	nivel=2							#deficultad de la IA
 	A=[[0]*7 for i in range(6)]		#tablero de juego
 	i=5								#fila de la ultima jugada de la IA
