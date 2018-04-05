@@ -1,39 +1,44 @@
 # Juego4enLineaEquipo07.py
 #
 # DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
-# contra una IA con 2 niveles de di cultad (facil y medio), a traves de la \
-# terminal de la interfaz grafica.
+# contra una IA con 2 niveles de dificultad (fácil, jugadas random y medio,\
+# jugadas controladas por la IA), a traves de la terminal de la interfaz grafica.
 #
 # Autores: 
-#	Br. Jose Barrera y Alfredo Cruz.
+#	Br. Jose Barrera y Br. Alfredo Cruz.
 #
 # Ultima modificacion: 06/04/2018.
 
 """
-   CONS					
-   	nombreusuario : str  		#informacion proporcionada por el usuriario que el programa no modifica:
-	nivel : int  			# su nombre, la dificultad, si desea abandonar una partida, si desea salir
-	partida : int	  		# del programa, y por supuesto la jugada que hara en cada turno reflejada en
-	seguir : bool  			# sus coordenadas  fila, columna.
-	x : int  
-	y : int  
-   VAR
-	A : array [0..6)x[0..7) of int  	# el tablero de juego
-	G : array [0..4)	 		# tablero de resultados
-	jugando : bool  			# en partida
-	turno : int  				# contador de los turnos 
-	juegauser : int				# a quien le toca jugar(True para user, False para IA)
-	ganador : int  				# el primero en cumplir las condiciones victoria
-	dentro : bool  				# dentro del programa
-	movida : bool  				# permite reintentar hasta hacer una jugada
-	i : int  				# fila de la jugada de la IA 
-	j : int  				# columna de la jugada de la IA
-	bound : int  				# cota que permite que los ciclos terminen
+   CONSTANTES Logicas			#informacion proporcionada por el usuriario que el programa no modifica:		
+   	nombreusuario : str		# nombre del usuario que esta jugando la partida
+	nivel : int  			# la dificultad escogida nivel1=Facil y nivel2=Medio, si desea salir
+	partida : int	  		# si se escoge 0 se inicia una partida, 1 se carga una, 2 se cierra el juego.
+	seguir : bool  			# si se desea o no rendirse en la partida actual.
+	guardar : bool			# si se desea o no guardar el estado actual de la partida en curso.
+	x : int				# Almacena la fila jugada por el usuario
+	y : int				# Almacena la columna jugada por el usuario
+  
+   VARIABLES Logicas
+	A : list			# el tablero logico del juego
+	G : list		 	# tablero de victorias globales del juego
+	jugando : bool  		# controla si se esta en partida o en el menu
+	turno : int  			# contador de los turnos de la partida
+	juegauser : int			# a quien le toca jugar(True para user, False para IA)
+	ganador : int  			# el primero en cumplir las condiciones victoria
+	dentro : bool  			# controla si esta dentro del programa
+	movida : bool  			# permite al nivel1 reintentar hasta hacer una jugada
+	i : int  			# fila de la jugada de la IA
+	j : int  			# columna de la jugada de la IA
+	Ruser : list			# Almacena los resultados de jugadaUser()
+	Rvictoria : list		# Almacena los resultados de Rvictoria()
+	RIA : list			# Almacena los resultados de IA()
+	bound : int  			# cota que permite que los ciclos terminen
 """	
 import pygame				
 import os		
-import random		 
-# CONSTANTES:
+import random	 
+# CONSTANTES Graficas:
 # Colores que seran usados en el juego
 NEGRO = (0, 0, 0)
 BLANCO = (255, 255, 255)
@@ -42,25 +47,18 @@ AZUL = (0, 0, 255)
 VERDE = (0, 255, 0)
 AMARILLO = (255, 255, 000)
 
-# Valores necesarias para la pantalla
+# Valores necesarios para la pantalla
 ALTO = 720       # alto de la ventana
 ANCHO = 1280     # ancho de la ventana
 FPS = 30         # frames per second
-	
-#	Variables:
-#	pantalla: object    // para el manejo de la interfaz grafica
-#	cuenta: object      // para el manejo del tiempo
-#	evento: object      // para capturar los eventos producidos
-#	jugando: bool       // dice si se continua en el juego
 
 # Inicializar la pantalla del juego
 pygame.init()
 os.environ['SDL_VIDEO_CENTERED'] = '1'                  # Centrar la ventana a la hora de abrirse
 pantalla = pygame.display.set_mode((ANCHO, ALTO))       # Configurando la pantalla
 pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pantalla
-reloj = pygame.time.Clock()
 
-# Loop del juego
+# Lista de subprogramas (funciones) que usa el esqueleto principal:
 
 def resultados(G=list,ganador=int,juegauser=bool):
 	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
@@ -546,14 +544,21 @@ def cargarTablero(A=list): #-> 'void':
 
 	pygame.display.flip()    
 
-jugando,dentro,ganador,juegauser=False,True,0,True	# Incializacion de las variables
-G=[[0,0,0]]								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
-G[0][0]=-1
-i,j=5,3
-A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
-while dentro :									#en menu
-	if not(jugando) :
-		juegauser=resultados(G,ganador,juegauser)
+# Incializacion de las variables del juego:
+dentro=True				# Para entrar en el loop del juego
+jugando=False				# Para entra primero al menu
+ganador=0				# Se supone un empate por defecto
+juegauser=True				# El primer turno corresponde al jugador por defecto
+G=[[0,0,0]]				# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
+G[0][0]=-1				# Corrije el error de leer que la partida a terminado en empate
+i,j=5,3					# Jugada Predeterminada de la IA en su primer turno
+A=[[0]*7 for i in range(6)]		# Crear tablero de juego logico.
+
+#Loop del juego
+
+while dentro :							# Dentro del juego
+	if not(jugando) :					# en menu
+		juegauser=resultados(G,ganador,juegauser)	# Comienza la partida el ganador de la anterior
 		while True: 					# Se permite al usuario introducir nuevos datos correctos
 			try: 
 				partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=2)"))
@@ -561,16 +566,14 @@ while dentro :									#en menu
 				break
 			except:
 				print("Partida solo puede valer 0, 1 o 2")
-		
 		dibujartableronuevo(A)				#Limpiamos el tablero grafico
 
-		if partida==0:#inicializamos las varibles de juego con las de la partida guardada
-
-			A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
-			jugando=True
-			turno=1
+		if partida==0:		#Inicializamos las varibles de juego con las de la partida guardada
+			A=[[0]*7 for i in range(6)]			# Crear nuevo tablero de juego logico.
+			jugando=True					# Salir del menu entrar en partida
+			turno=1						# Se empieza el primer turno
 			
-			while True: # Se permite al usuario introducir nuevos datos correctos
+			while True: # Se permite al usuario introducir nuevamente su nombre
 				try: 
 					nombreusuario=str(input("Coloque su nombre, por favor:"))
 					assert( len(nombreusuario)>0 )
@@ -578,7 +581,7 @@ while dentro :									#en menu
 				except:
 					print("Coloque al menos un caracter")
 			
-			while True: # Se permite al usuario introducir nuevos datos correctos
+			while True: # Se permite al usuario escoger nuevamente el nivel 
 				try: 
 					nivel=int(input("Seleccione el nivel:(1=basico,2=medio)"))
 					assert( nivel==1 or nivel==2 )
@@ -586,89 +589,89 @@ while dentro :									#en menu
 				except:
 					print("Escoja entre el nivel 1 o 2")
 			
-		elif partida==1:       #sobreescribimos las variables de juego con las de la partida guardada
-			contenido=CargarJuego("guardado.txt")
-			nombreusuario = contenido[0]		#nombre del jugador
-			turno = int(contenido[1])			#turno de la partida en curso
-			nivel = int(contenido[2])			#deficultad de la IA
-			A = eval(contenido[3])				#tablero de juego
-			i = int(contenido[4])				#fila de la ultima jugada de la IA
-			j = int(contenido[5])				#columna de la ultima jugada de la IA
-			G = eval(contenido[6])
-			dibujartableronuevo(A)
-			cargarTablero(A)
-			jugando=True
-		elif partida==2:
-			dentro=False
-			print("Hasta luego!")
-			pygame.quit()
+		elif partida==1:       # Sobreescribimos las variables de juego con las de la partida guardada
+			contenido=CargarJuego("guardado.txt")	# Leemos el archivo donde guardamos la partida
+			nombreusuario = contenido[0]		# Nombre del jugador
+			turno = int(contenido[1])		# Turno de la partida
+			nivel = int(contenido[2])		# Dificultad de la IA
+			A = eval(contenido[3])			# Tablero de juego
+			i = int(contenido[4])			# Fila de la ultima jugada de la IA
+			j = int(contenido[5])			# Columna de la ultima jugada de la IA
+			G = eval(contenido[6])			# Tablero global de victorias
+			dibujartableronuevo(A)			# Dibujamos un tablero grafico nuevo
+			cargarTablero(A)			# Dibujamos las jugadas cargadas del tablero
+			jugando=True				# Salir del Menu entrar en partida
+		
+		elif partida==2:	# El jugador decide que quiere salir del juego
+			dentro=False	# Salimos del loop del juego
+			print("Hasta luego!")	# Nos depedimos del usuario
+			pygame.quit()		# Cerramos la interfaz grafica
 	
-	elif jugando :							#en partida
-		if turno >= 43 :
-			jugando=False					# el tablero se encuentra lleno, se declara empate
+	elif jugando :					#en partida
+		if turno >= 43 :			# el tablero se encuentra lleno, se declara empate
+			jugando=False
 			ganador=0
-		elif turno < 43 :								
-			if juegauser :						# juega=True representa al usuario
-					#se actuliza las variables de juego
+		elif turno < 43 :			# el tablero aun no ha llenado se sigue jugando					
+			if juegauser :			# Turno del usuario
 				guardar=bool(input("Desea guardar su partida?(Si=Enter)(No=Else)"))
 				if not(guardar): #escribimos en alrchivo de guardado las variales de juego actuales
-					actualizacion(anterior,nombreusuario,turno,nivel,A,i,j,G)
-					GuardarJuego("guardado.txt",anterior)
-				seguir=bool(input("Desea seguir en esta partida?(Si=Enter)(No=Else)"))	# en cada turno el usuario
-				if not(seguir):							# debe decidir si sigue 
-					Ruser=jugadaUser(A)
-					A=Ruser[0]
-					x=Ruser[1]
-					y=Ruser[2]
-					Rvictoria=victoria(A,x,y,jugando,ganador)				#la partida actual
-					jugando=Rvictoria[0]
-					ganador=Rvictoria[1]
+					actualizacion(anterior,nombreusuario,turno,nivel,A,i,j,G) #actuliza las variables de juego
+					GuardarJuego("guardado.txt",anterior)	# guarda el estado del juego en el archivo
+				seguir=bool(input("Desea seguir en esta partida?(Si=Enter)(No=Else)")) # en cada turno
+				if not(seguir):	
+					Ruser=jugadaUser(A)	# Almacenamos los cambios tras la jugada del usuario.
+					A=Ruser[0]		# Reescribimos la matriz con la jugada
+					x=Ruser[1]		# Guardamos la fila de la jugada
+					y=Ruser[2]		# Guardamos la columna de la jugada
+					Rvictoria=victoria(A,x,y,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
+											# 4 en raya no deberian cambiar.
+				else:
+					jugando = False				# Se va al menu
+					ganador = 2				# Se declara ganador a la maquina
 
-				else:	  
-					jugando = False
-					ganador = 0
-
-			elif not(juegauser) :
+			elif not(juegauser) :					# turno de la maquina
 				if nivel == 1 :					# el nivel 1 hace un random de todas las
 					movida = True  				# las coordenadas del tablero hasta 
 					while movida:				# encontrar una jugada valida
-						i = random.randrange(6)		
+						i = random.randrange(6)	
 						j = random.randrange(7)
-						if valida(A,i,j) :
+						if valida(A,i,j) :		# si la jugada es valida la ejecuta
 							A[i][j] = 2
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
-							movida = False		# momento en el que se rompe el ciclo
-					Rvictoria=victoria(A,i,j,jugando,ganador)
-					jugando=Rvictoria[0]
-					ganador=Rvictoria[1]
+							movida = False		# se rompe el ciclo
+					Rvictoria=victoria(A,i,j,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
+											# 4 en raya no deberian cambiar.
 
 				elif nivel == 2 :				# el nivel 2 presenta una sencilla IA
-					if turno==1 or turno==2 :		# que lo hace apenas mas complejo
-						if valida(A,5,3):		
-							A[5][3]=2		# se le da una jugada inicial predefinida
-							i,j=5,3 
+					if turno==1 or turno==2 :		# si esta en su primer turno
+						if valida(A,5,3):		# y es valida la jugada predefinida
+							A[5][3]=2		# fila 5 columna 3, la ejecuta
+							i,j=5,3 		# se guarda la jugada
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
-						elif not (valida(A,5,3)):		# y una jugada alternativa
-							A[5][2]=2
-							i,j=5,2  
+						elif not (valida(A,5,3)):	# si no era valida la predefinida
+							A[5][2]=2		# siempre podra ejecutar esta
+							i,j=5,2			# se guarda la jugada
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
 					elif turno > 2 :			# a partir de una jugada anterior
-						RIA=IA(A,i,j)
-						A=RIA[0]
+						RIA=IA(A,i,j)			# Almacenamos los cambios del tablero, y la jugada
+						A=RIA[0]			# Sobreescribimos el tablero y la jugada
 						i=RIA[1]
-						j=RIA[2]  			# decide que linea deberia jugar
-						Rvictoria=victoria(A,i,j,jugando,ganador) 
-						jugando=Rvictoria[0]
-						ganador=Rvictoria[1]
+						j=RIA[2]  			
+					Rvictoria=victoria(A,i,j,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
+											# 4 en raya no deberian cambiar.
 
-			turno = turno + 1
-			juegauser = not(juegauser)
-			pygame.display.flip() 
+			turno = turno + 1		# contamos el siguiente turno
+			juegauser = not(juegauser)	# se pasa el turno al rival
+			pygame.display.flip() 		# se recarga el tablero
 
 assert( dentro==False )
 
-# Aqui termina el esqueleto del programa, de aqui en adelante se colocan
-# todos los procedimientos que llama.
-
+# Aqui termina el el loop del juego.
 #cerrar el programa
 pygame.quit()
