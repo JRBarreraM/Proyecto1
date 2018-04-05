@@ -75,7 +75,7 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 		juegauser = False
 	print("Este el tablero de victorias")
 	print("Empates/Jugador/IA")
-	print(G)
+	print(tabv)
 	return juegauser	
 
 
@@ -134,20 +134,20 @@ def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int):
 	# VAR:
 		# Rvictoria : list
 	Rvictoria=victoriahorizontal(tabl,i,j,jugando,ganador)
-	jugando=Rvictoritabl[0]
-	ganador=Rvictoritabl[1]
+	jugando=Rvictoria[0]
+	ganador=Rvictoria[1]
 	if jugando:
-		Rvictoria=victoriavertical(A,i,j,jugando,ganador)
-		jugando=Rvictoritabl[0]
-		ganador=Rvictoritabl[1]
+		Rvictoria=victoriavertical(tabl,i,j,jugando,ganador)
+		jugando=Rvictoria[0]
+		ganador=Rvictoria[1]
 		if jugando:
-			Rvictoria=victoriadiagonalprincipal(A,i,j,jugando,ganador)
-			jugando=Rvictoritabl[0]
-			ganador=Rvictoritabl[1]
+			Rvictoria=victoriadiagonalprincipal(tabl,i,j,jugando,ganador)
+			jugando=Rvictoria[0]
+			ganador=Rvictoria[1]
 			if jugando:
-				Rvictoria=victoriadiagonalsecundaria(A,i,j,jugando,ganador) 
-				jugando=Rvictoritabl[0]
-				ganador=Rvictoritabl[1]
+				Rvictoria=victoriadiagonalsecundaria(tabl,i,j,jugando,ganador) 
+				jugando=Rvictoria[0]
+				ganador=Rvictoria[1]
 
 	return jugando, ganador
 
@@ -370,7 +370,7 @@ def IA( tabl=list, i=int, j=int ):
 		while 0 <= i < 6 and z==0:
 		#cota = j
 			while 0 <= j < 7 and z==0:
-				if valida(A,i,j):
+				if valida(tabl,i,j):
 					tabl[i][j]=2
 					pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
 					z=1
@@ -604,7 +604,7 @@ while dentro :							# Dentro del juego
 			if juegauser :			# Turno del usuario
 				guardar=bool(input("Desea guardar su partida?(Si=Enter)(No=Else)"))
 				if not(guardar): #escribimos en alrchivo de guardado las variales de juego actuales
-					actualizacion(anterior,nombreusuario,turno,nivel,tabl,i,j,G) #actuliza las variables de juego
+					actualizacion(anterior,nombreusuario,turno,nivel,tabl,i,j,tabv) #actuliza las variables de juego
 					GuardarJuego("guardado.txt",anterior)	# guarda el estado del juego en el archivo
 				seguir=bool(input("Desea seguir en esta partida?(Si=Enter)(No=Else)")) # en cada turno
 				if not(seguir):	
@@ -613,8 +613,8 @@ while dentro :							# Dentro del juego
 					x=Ruser[1]		# Guardamos la fila de la jugada
 					y=Ruser[2]		# Guardamos la columna de la jugada
 					Rvictoria=victoria(tabl,x,y,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
-					jugando=Rvictoritabl[0]				# Sobreescribimos jugando y ganador
-					ganador=Rvictoritabl[1]				# Si la funcion victoria no encuentra
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
 											# 4 en raya no deberian cambiar.
 				else:
 					jugando = False				# Se va al menu
@@ -631,8 +631,8 @@ while dentro :							# Dentro del juego
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
 							movida = False		# se rompe el ciclo
 					Rvictoria=victoria(tabl,i,j,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
-					jugando=Rvictoritabl[0]				# Sobreescribimos jugando y ganador
-					ganador=Rvictoritabl[1]				# Si la funcion victoria no encuentra
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
 											# 4 en raya no deberian cambiar.
 
 				elif nivel == 2 :				# el nivel 2 presenta una sencilla IA
@@ -647,12 +647,12 @@ while dentro :							# Dentro del juego
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
 					elif turno > 2 :			# a partir de una jugada anterior
 						RIA=IA(tabl,i,j)			# Almacenamos los cambios del tablero, y la jugada
-						A=RItabl[0]			# Sobreescribimos el tablero y la jugada
-						i=RItabl[1]
-						j=RItabl[2]  			
+						A=RIA[0]			# Sobreescribimos el tablero y la jugada
+						i=RIA[1]
+						j=RIA[2]
 					Rvictoria=victoria(tabl,i,j,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
-					jugando=Rvictoritabl[0]				# Sobreescribimos jugando y ganador
-					ganador=Rvictoritabl[1]				# Si la funcion victoria no encuentra
+					jugando=Rvictoria[0]				# Sobreescribimos jugando y ganador
+					ganador=Rvictoria[1]				# Si la funcion victoria no encuentra
 											# 4 en raya no deberian cambiar.
 
 			turno = turno + 1		# contamos el siguiente turno
