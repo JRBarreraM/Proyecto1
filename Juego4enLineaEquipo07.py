@@ -60,7 +60,7 @@ pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pan
 
 # Lista de subprogramas (funciones) que usa el esqueleto principal:
 
-def resultados(G=list,ganador=int,juegauser=bool):
+def resultados(G=list,ganador=int,juegauser=bool) -> bool:
 	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
 	#Post: True
 	
