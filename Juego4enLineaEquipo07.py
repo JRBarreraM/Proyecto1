@@ -107,6 +107,8 @@ def jugadaUser( A = list ):
 	# Post:  (valida(x,y)=True => A[x][y] = 1])
 	# VAR:
 		# JugadaCorrecta : bool
+		# x : int
+		# y : int
 	
 	JugadaCorrecta=False
 	
@@ -121,18 +123,16 @@ def jugadaUser( A = list ):
 		
 	A[x][y] = 1
 	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
-	#Dibujar circulo rojo en la posicion correspodiente
-
-	pygame.display.flip()  		
+	#Dibujar circulo rojo en la posicion correspodiente	
 
 	return A,x,y
 
 
-		
 def victoria(A=list,i=int,j= int,jugando=bool,ganador=int):
 	# Pre: True  
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
-
+	# VAR:
+		# Rvictoria : list
 	Rvictoria=victoriahorizontal(A,i,j,jugando,ganador)
 	jugando=Rvictoria[0]
 	ganador=Rvictoria[1]
@@ -156,13 +156,10 @@ def victoriadiagonalprincipal( A= list, i=int, j= int, jugando=bool, ganador=int
 	#Pre: N = 6 and M = 7  
 	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) 
 	#VAR
-    	#ganador : int  
-		#jugando : bool  
-		#i : int  
-		#j : int  
+    		#ganador : int  
+		#jugando : bool   
 
 	jugando = True
-
 	i=0
 	#cota= 6-i
 	while i < 3:
@@ -231,10 +228,7 @@ def victoriahorizontal( A= list, i=int, j= int, jugando=bool, ganador=int ):
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+3)*142, 134 + i*88), 20, 0)
 			j=j+1
 		i=i+1
-	pygame.display.flip()	
 	return jugando, ganador
-
-
 
 def victoriavertical( A= list, i=int, j= int, jugando=bool, ganador=int ):
 	#Pre: N = 6 and M = 7       
@@ -379,7 +373,6 @@ def IA( A=list, i=int, j=int ):
 				if valida(A,i,j):
 					A[i][j]=2
 					pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
-					pygame.display.flip()
 					z=1
 				j=j-1
 			i=i-1
@@ -388,49 +381,42 @@ def IA( A=list, i=int, j=int ):
 		A[i][j-1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j-1)*142, 134 + i*88), 30, 0)
-		pygame.display.flip()
 		i=i
 		j=j-1
 	elif Max==hd:
 		A[i][j+1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j+1)*142, 134 + i*88), 30, 0)
-		pygame.display.flip()
 		i=i
 		j=j+1
 	elif Max==vs:
 		A[i-1][j]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + (i-1)*88), 30, 0)
-		pygame.display.flip()
 		i=i-1
 		j=j
 	elif Max==dps:
 		A[i-1][j-1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j-1)*142, 134 + (i-1)*88), 30, 0)
-		pygame.display.flip()
 		i=i-1
 		j=j-1
 	elif Max==dpi:
 		A[i+1][j+1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j+1)*142, 134 + (i+1)*88), 30, 0)
-		pygame.display.flip()
 		i=i+1
 		j=j+1
 	elif Max==dss:
 		A[i-1][j+1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j+1)*142, 134 + (i-1)*88), 30, 0)
-		pygame.display.flip()
 		i=i-1
 		j=j+1
 	elif Max==dsi:				
 		A[i+1][j-1]=2
 		#Dibujar circulo azul en la posicion correspodiente
 		pygame.draw.circle(pantalla,AZUL, (201 + (j-1)*142, 134 + (i+1)*88), 30, 0)
-		pygame.display.flip()
 		i=i+1
 		j=j-1	
 	return A,i,j
@@ -529,7 +515,6 @@ def dibujartableronuevo(A=list):        #->void
 	pantalla.blit(VI, [900, 40])
 	VII = fuente.render("6", True, VERDE)
 	pantalla.blit(VII, [1050, 40])	
-	pygame.display.flip()
 
 	for i in range(0,6):
 		for j in range(0,7):
