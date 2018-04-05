@@ -589,6 +589,7 @@ while dentro :							# Dentro del juego
 			dibujartableronuevo(A)			# Dibujamos un tablero grafico nuevo
 			cargarTablero(A)			# Dibujamos las jugadas cargadas del tablero
 			jugando=True				# Salir del Menu entrar en partida
+			jugadaUser=True				# El jugador debe empezar en su turno
 		
 		elif partida==2:	# El jugador decide que quiere salir del juego
 			dentro=False	# Salimos del loop del juego
