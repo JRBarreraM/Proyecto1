@@ -435,7 +435,7 @@ anterior=valoresdejuego()			#estructura donde guardamos los datos de la partida
 
 # Descripcion: Funcion que cada turno actualiza los valores de las variables de juego. 
 # Parametros:
-def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=int,A=list,i=int,j=int,G=list):
+def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=int,tabl=list,i=int,j=int,G=list):
 		anterior.nombreusuario=nombreusuario
 		anterior.turno=turno
 		anterior.nivel=nivel
@@ -455,7 +455,7 @@ def CargarJuego(archivo=str):
 	f.closed
 	return contenido
 # Descripcion: Funcion que escibe en el archivo de guardado los valores actuales
-#			de las variables de juego(nombre,turno,nivel,A,i,j). 
+#				de las variables de juego(nombre,turno,nivel,tabl,i,j,tabv). 
 # Parametros:
 def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 	with open(archivo,'w') as f:
@@ -647,7 +647,7 @@ while dentro :							# Dentro del juego
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)   
 					elif turno > 2 :			# a partir de una jugada anterior
 						RIA=IA(tabl,i,j)			# Almacenamos los cambios del tablero, y la jugada
-						A=RIA[0]			# Sobreescribimos el tablero y la jugada
+						tabl=RIA[0]			# Sobreescribimos el tablero y la jugada
 						i=RIA[1]
 						j=RIA[2]
 					Rvictoria=victoria(tabl,i,j,jugando,ganador)   # Almacenamos los cambios de jugando y ganador
