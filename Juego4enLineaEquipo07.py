@@ -67,18 +67,18 @@ def resultados(G=list,ganador=int,juegauser=bool):
 	#Post: True
 	
 	if ganador==0:
-		G[0]=G[0]+1
+		G[0][0]=G[0][0]+1
 		juegauser = False
 	elif ganador==1:
-		G[1]=G[1]+1
+		G[0][1]=G[0][1]+1
 		juegauser = True
 	elif ganador==2:
-		G[2]=G[2]+1
-		juegauser = True
+		G[0][2]=G[0][2]+1
+		juegauser = False
 	print("Este el tablero de victorias")
 	print("Empates/Jugador/IA")
 	print(G)
-	return(G,ganador,juegauser)	
+	return juegauser	
 
 # Esta es la funcion valida una de las funciones mas importantes del programa, sin importar
 # si la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
@@ -103,8 +103,7 @@ def valida( A = list, i=int, j=int ):
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
 	
-	return valida        
-      
+	return valida
 
 def jugadaUser( A = list ):
 	# Pre: True 
@@ -148,7 +147,7 @@ def victoria(A=list,i=int,j= int,jugando=bool,ganador=int):
 				Rvictoria=victoriadiagonalsecundaria(A,i,j,jugando,ganador) 
 				jugando=Rvictoria[0]
 				ganador=Rvictoria[1]
-	
+
 	return jugando, ganador
 
 #Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
@@ -370,7 +369,6 @@ def IA( A=list, i=int, j=int ):
 	
 	z=0
 	Max=max(hi,hd,vs,dps,dpi,dss,dsi)  	# buscamos la jugada mas "favorable"
-	print(Max)
 	if Max==0:			# si la pieza se encuentra rodeada, se busca un nuevo
 		i,j = 5,6			# lugar donde jugar.
 		#cota = i
@@ -439,23 +437,25 @@ def IA( A=list, i=int, j=int ):
 #Clase que nos almacenar los valores de juego
 
 class valoresdejuego:
-	nombre="Jose"					#nombre del jugador
+	nombreusuario="Jose"					#nombre del jugador
 	turno=100						#turno de la partida en curso
 	nivel=2							#deficultad de la IA
 	A=[[0]*7 for i in range(6)]		#tablero de juego
 	i=5								#fila de la ultima jugada de la IA
 	j=3								#columna de la ultima jugada de la IA
+	G=[[0,0,0]]						#tablero de victorias globales
 anterior=valoresdejuego()			#estructura donde guardamos los datos de la partida
 
 # Descripcion: Funcion que cada turno actualiza los valores de las variables de juego. 
 # Parametros:
-def actualizacion(estructura=valoresdejuego,nombre=str,turno=int,nivel=int,A=list,i=int,j=int):
-		anterior.nombre=nombre
+def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=int,A=list,i=int,j=int,G=list):
+		anterior.nombreusuario=nombreusuario
 		anterior.turno=turno
 		anterior.nivel=nivel
 		anterior.A=A
 		anterior.i=i
 		anterior.j=j
+		anterior.G=G
 		return anterior
 
 # Descripcion: Funcion que lee el archivo de guardado y almacena su informacion
@@ -464,7 +464,7 @@ def actualizacion(estructura=valoresdejuego,nombre=str,turno=int,nivel=int,A=lis
 def CargarJuego(archivo=str):
 	with open(archivo,'r+') as f:
 		oldcontenido = f.readlines()
-		contenido = [oldcontenido[i].rstrip() for i in range(6)]
+		contenido = [oldcontenido[i].rstrip() for i in range(7)]
 	f.closed
 	return contenido
 # Descripcion: Funcion que escibe en el archivo de guardado los valores actuales
@@ -472,12 +472,13 @@ def CargarJuego(archivo=str):
 # Parametros:
 def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 	with open(archivo,'w') as f:
-		f.write(anterior.nombre+"\n")
+		f.write(anterior.nombreusuario+"\n")
 		f.write(str(anterior.turno)+"\n")
 		f.write(str(anterior.nivel)+"\n")
 		f.write(str(anterior.A)+"\n")
 		f.write(str(anterior.i)+"\n")
-		f.write(str(anterior.j))
+		f.write(str(anterior.j)+"\n")
+		f.write(str(anterior.G))
 	f.closed
 
 #Funciones referentes a la parte grafica 
@@ -533,7 +534,6 @@ def dibujartableronuevo(A=list):        #->void
 		for j in range(0,7):
 			if A[i][j] != 0:
 				pygame.draw.circle(pantalla, NEGRO, (201 + j*142, 134 + i*88), 30, 0)
-
 	pygame.display.flip()
 
 def cargarTablero(A=list): #-> 'void':
@@ -546,23 +546,21 @@ def cargarTablero(A=list): #-> 'void':
 
 	pygame.display.flip()    
 
-
 jugando,dentro,ganador,juegauser=False,True,0,True	# Incializacion de las variables
-G=[0]*3								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
-G[0]=-1
+G=[[0,0,0]]								# Crear tablero de Victorias [0]Empate, [1]User, [2]IA
+G[0][0]=-1
 i,j=5,3
 A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
 while dentro :									#en menu
 	if not(jugando) :
-		resultados(G,ganador,juegauser)
-
-		while True: # Se permite al usuario introducir nuevos datos correctos
+		juegauser=resultados(G,ganador,juegauser)
+		while True: 					# Se permite al usuario introducir nuevos datos correctos
 			try: 
 				partida=int(input("Desea empezar o cargar una partida?(0=Nueva,1=Cargar,No=2)"))
 				assert( partida==0 or partida==2 or partida==1 )
 				break
 			except:
-				print("Partida solo puede valer 0,1 o 2")
+				print("Partida solo puede valer 0, 1 o 2")
 		
 		dibujartableronuevo(A)				#Limpiamos el tablero grafico
 
@@ -571,7 +569,6 @@ while dentro :									#en menu
 			A=[[0]*7 for i in range(6)]			#Crear tablero de juego logico.
 			jugando=True
 			turno=1
-			
 			
 			while True: # Se permite al usuario introducir nuevos datos correctos
 				try: 
@@ -591,12 +588,13 @@ while dentro :									#en menu
 			
 		elif partida==1:       #sobreescribimos las variables de juego con las de la partida guardada
 			contenido=CargarJuego("guardado.txt")
-			nombre = contenido[0]		#nombre del jugador
-			turno = int(contenido[1])	#turno de la partida en curso
-			nivel = int(contenido[2])	#deficultad de la IA
-			A = (contenido[3])			#tablero de juego
-			i = int(contenido[4])		#fila de la ultima jugada de la IA
-			j = int(contenido[5])		#columna de la ultima jugada de la IA
+			nombreusuario = contenido[0]		#nombre del jugador
+			turno = int(contenido[1])			#turno de la partida en curso
+			nivel = int(contenido[2])			#deficultad de la IA
+			A = eval(contenido[3])				#tablero de juego
+			i = int(contenido[4])				#fila de la ultima jugada de la IA
+			j = int(contenido[5])				#columna de la ultima jugada de la IA
+			G = eval(contenido[6])
 			dibujartableronuevo(A)
 			cargarTablero(A)
 			jugando=True
@@ -606,7 +604,7 @@ while dentro :									#en menu
 			pygame.quit()
 	
 	elif jugando :							#en partida
-		if turno == 43 :
+		if turno >= 43 :
 			jugando=False					# el tablero se encuentra lleno, se declara empate
 			ganador=0
 		elif turno < 43 :								
@@ -614,6 +612,7 @@ while dentro :									#en menu
 					#se actuliza las variables de juego
 				guardar=bool(input("Desea guardar su partida?(Si=Enter)(No=Else)"))
 				if not(guardar): #escribimos en alrchivo de guardado las variales de juego actuales
+					actualizacion(anterior,nombreusuario,turno,nivel,A,i,j,G)
 					GuardarJuego("guardado.txt",anterior)
 				seguir=bool(input("Desea seguir en esta partida?(Si=Enter)(No=Else)"))	# en cada turno el usuario
 				if not(seguir):							# debe decidir si sigue 
@@ -624,10 +623,11 @@ while dentro :									#en menu
 					Rvictoria=victoria(A,x,y,jugando,ganador)				#la partida actual
 					jugando=Rvictoria[0]
 					ganador=Rvictoria[1]
-					print(A)
+
 				else:	  
 					jugando = False
 					ganador = 0
+
 			elif not(juegauser) :
 				if nivel == 1 :					# el nivel 1 hace un random de todas las
 					movida = True  				# las coordenadas del tablero hasta 
@@ -638,10 +638,10 @@ while dentro :									#en menu
 							A[i][j] = 2
 							pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
 							movida = False		# momento en el que se rompe el ciclo
-					Rvictoria=victoria(A,i,j,jugando,ganador) 
+					Rvictoria=victoria(A,i,j,jugando,ganador)
 					jugando=Rvictoria[0]
 					ganador=Rvictoria[1]
-					
+
 				elif nivel == 2 :				# el nivel 2 presenta una sencilla IA
 					if turno==1 or turno==2 :		# que lo hace apenas mas complejo
 						if valida(A,5,3):		
@@ -660,19 +660,11 @@ while dentro :									#en menu
 						Rvictoria=victoria(A,i,j,jugando,ganador) 
 						jugando=Rvictoria[0]
 						ganador=Rvictoria[1]
-						print(A)
-  
-		
+
 			turno = turno + 1
 			juegauser = not(juegauser)
 			pygame.display.flip() 
 
-
-    
-
-
-
-		
 assert( dentro==False )
 
 # Aqui termina el esqueleto del programa, de aqui en adelante se colocan
