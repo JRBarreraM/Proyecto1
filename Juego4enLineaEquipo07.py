@@ -126,7 +126,11 @@ def jugadaUser( tabl = list ):
 
 	return tabl,x,y
 
-def validarcolumnauser():
+def validarcolumnauser():#->int:
+	# Pre: True 
+	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
+	# VAR:
+		# y : int
 	while True:
 		try:
 			y=int(input("Ingrese la columna donde desea jugar:"))
@@ -212,7 +216,7 @@ def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
 	#cota=6-i
 	while i<6:
 		j=0
-		#cota=4-j}
+		#cota=4-j
 		while j<4 and jugando==True:
 			#Conexion horizontal
 			if tabl[i][j]==tabl[i][j+1]==tabl[i][j+2]==tabl[i][j+3]==1:
