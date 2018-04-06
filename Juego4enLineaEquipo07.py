@@ -544,6 +544,10 @@ def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=in
 #			en una lista para posteriormente sobreescribir las variables de juego. 
 # Parametros:
 def CargarJuego(archivo=str) ->list:
+	try:
+		assert(open(archivo,'r+'))
+	except:
+		print("No se encuentra partida cargada, guarde una partida primero")
 	with open(archivo,'r+') as f:
 		oldcontenido = f.readlines()
 		contenido = [oldcontenido[i].rstrip() for i in range(7)]
