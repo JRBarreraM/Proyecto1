@@ -73,10 +73,11 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 		tabv[0][2]=tabv[0][2]+1
 		juegauser = False
 	assert(True)
-		
+	print("\n","Bienvenido Al Menu","\n")
 	print("Este el tablero de victorias")
 	print("Empates/Jugador/IA")
 	print(tabv)
+	print("\n")
 	return juegauser	
 
 
@@ -110,21 +111,19 @@ def jugadaUser( tabl = list ) -> (list,int,int) :
 	# Pre: True 
 	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
-		# JugadaCorrecta : bool
 		# x : int
 		# y : int
 	assert(True)
 
-	JugadaCorrecta=False
-	
-	while not(JugadaCorrecta) :
-		try:	
-			x=int(input("Ingrese la fila donde desea jugar:"))
-			y=int(input("Ingrese la columna donde desea jugar:"))
-			assert(valida(tabl,x,y))
+	x=5
+	y=validarcolumnauser()
+	while 0<=x :
+		if valida(tabl,x,y):
 			break
-		except:
-			print("Jugada no valida,intenta otra vez")
+		x-=1
+	if x==7 :
+		print("Jugada no valida,intenta otra vez")
+		jugadaUser(tabl)
 		
 	tabl[x][y] = 1
 	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
@@ -134,6 +133,19 @@ def jugadaUser( tabl = list ) -> (list,int,int) :
 
 	return tabl,x,y
 
+def validarcolumnauser()->int:
+	# VAR:
+		# y : int
+	assert(True)
+	while True:
+		try:
+			y=int(input("Ingrese la columna donde desea jugar:"))
+			assert(0<=y<=6)
+			break		
+		except:
+			print("Columna no valida,intenta otra vez")
+	assert(0<=y<=6)
+	return y
 
 def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int) -> (bool,int): 
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
