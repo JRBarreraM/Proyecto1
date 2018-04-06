@@ -205,7 +205,7 @@ def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=
 		i=i+1
 		assert(cota1>6-i)
 		cota1=6-i
-		assert(cota>=0)
+		assert(cota1>=0)
 
 	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
 
@@ -350,7 +350,7 @@ def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador
 		i=i+1
 		assert(cota1>3-i)
 		cota1=3-i
-		assert(cota>=0)
+		assert(cota1>=0)
 	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))
 		
 	return jugando, ganador
