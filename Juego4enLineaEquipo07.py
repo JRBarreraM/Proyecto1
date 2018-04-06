@@ -16,23 +16,23 @@
 	partida : int	  	# si se escoge 0 se inicia una partida, 1 se carga una, 2 se cierra el juego.
 	seguir : bool  		# si se desea o no rendirse en la partida actual.
 	guardar : bool		# si se desea o no guardar el estado actual de la partida en curso.
-	x : int				# Almacena la fila jugada por el usuario
-	y : int				# Almacena la columna jugada por el usuario
   
    VARIABLES Logicas
-	tabl : list			# el tablero logico del juego
-	tabv : list		 	# tablero de victorias globales del juego
+	tabl : list		# el tablero logico del juego
+	tabv : list		# tablero de victorias globales del juego
 	jugando : bool  	# controla si se esta en partida o en el menu
 	turno : int  		# contador de los turnos de la partida
 	juegauser : int		# a quien le toca jugar(True para user, False para IA)
 	ganador : int  		# el primero en cumplir las condiciones victoria
 	dentro : bool  		# controla si esta dentro del programa
 	movida : bool  		# permite al nivel1 reintentar hasta hacer una jugada
-	i : int  			# fila de la jugada de la IA
-	j : int  			# columna de la jugada de la IA
+	x : int			# Almacena la fila jugada por el usuario
+	y : int			# Almacena la columna jugada por el usuario
+	i : int  		# fila de la jugada de la IA
+	j : int  		# columna de la jugada de la IA
 	Ruser : list		# Almacena los resultados de jugadaUser()
 	Rvictoria : list	# Almacena los resultados de Rvictoria()
-	RIA : list			# Almacena los resultados de IA()
+	RIA : list		# Almacena los resultados de IA()
 	bound : int  		# cota que permite que los ciclos terminen
 """	
 import pygame				
