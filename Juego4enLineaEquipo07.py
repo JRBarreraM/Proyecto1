@@ -61,8 +61,7 @@ pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pan
 # Lista de subprogramas (funciones) que usa el esqueleto principal:
 
 def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
-	#Pre: ganador==0 \/ ganador==1 \/ ganador==2
-	#Post: True
+	assert(ganador==0 or ganador==1 or ganador==2)
 	
 	if ganador==0:
 		tabv[0][0]=tabv[0][0]+1
@@ -73,19 +72,20 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	elif ganador==2:
 		tabv[0][2]=tabv[0][2]+1
 		juegauser = False
-	print("\n","Bienvenido Al Menu","\n")
+	assert(True)
+		
 	print("Este el tablero de victorias")
 	print("Empates/Jugador/IA")
 	print(tabv)
-	print("\n")
 	return juegauser	
 
 
-def valida( tabl = list, i=int, j=int ):
-	# Pre: True 
+def valida( tabl = list, i=int, j=int ) -> bool:
+	  
 	# Post: valida=((tabl[i][j]=0)andi=5)\/((tabl[i][j]=0)andi<5andtabl[i-1][j]!=0)
 	# VAR:
 		#valida : bool  
+	assert(True)	
 	
 	if 0 <= i < 6 and 0 <= j < 7: 
 		if tabl[i][j]==0:
@@ -101,50 +101,46 @@ def valida( tabl = list, i=int, j=int ):
 		
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
+
+	#assert(valida==((tabl[i][j]==0) and i==5) or (tabl[i+1][j]==0) and i<5 or ((tabl[i+1][j]!=0) and i<5))	
 	
 	return valida
 
-def jugadaUser( tabl = list ):
+def jugadaUser( tabl = list ) -> (list,int,int) :
 	# Pre: True 
 	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
+		# JugadaCorrecta : bool
 		# x : int
 		# y : int
-	x=0
-	y=validarcolumnauser()
-	while x<=6 :
-		if valida(tabl,x,y):
+	assert(True)
+
+	JugadaCorrecta=False
+	
+	while not(JugadaCorrecta) :
+		try:	
+			x=int(input("Ingrese la fila donde desea jugar:"))
+			y=int(input("Ingrese la columna donde desea jugar:"))
+			assert(valida(tabl,x,y))
 			break
-		x+=1
-	if x==7 :
-		print("Jugada no valida,intenta otra vez")
-		jugadaUser(tabl)
+		except:
+			print("Jugada no valida,intenta otra vez")
 		
 	tabl[x][y] = 1
 	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
 	#Dibujar circulo rojo en la posicion correspodiente	
 
+	#assert(not(valida(x,y)==True) or tabl[x][y] == 1)
+
 	return tabl,x,y
 
-def validarcolumnauser():#->int:
-	# Pre: True 
-	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
-	# VAR:
-		# y : int
-	while True:
-		try:
-			y=int(input("Ingrese la columna donde desea jugar:"))
-			assert(0<=y<=6)
-			break		
-		except:
-			print("Columna no valida,intenta otra vez")
-	return y
 
-def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int):
-	# Pre: True  
+def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int) -> (bool,int): 
 	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
 	# VAR:
 		# Rvictoria : list
+	assert(True)
+
 	Rvictoria=victoriahorizontal(tabl,i,j,jugando,ganador)
 	jugando=Rvictoria[0]
 	ganador=Rvictoria[1]
@@ -161,22 +157,26 @@ def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int):
 				jugando=Rvictoria[0]
 				ganador=Rvictoria[1]
 
+	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+
 	return jugando, ganador
 
 #Aqui se verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
-def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
-	#Pre: N = 6 and M = 7  
-	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False)) 
+def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
 	#VAR
-    		#ganador : int  
-		#jugando : bool   
+    	#ganador : int  
+		#jugando : bool  
+
+	assert(0<=i<6 and 0<=j<7)
 
 	jugando = True
 	i=0
-	#cota= 6-i
+	cota1= 6-i
+	assert(cota1>=0)
 	while i < 3:
 		j=0
-		#cota= 4-j
+		cota2= 4-j
+		assert(cota2>=0)
 		while j < 4 and jugando==True:
 			#Conexion diagonal principal
 			if tabl[i][j]==tabl[i+1][j+1]==tabl[i+2][j+2]==tabl[i+3][j+3]==1:
@@ -199,24 +199,34 @@ def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+2)*142, 134 + (i+2)*88), 20, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+3)*142, 134 + (i+3)*88), 20, 0)
 			j=j+1
+			assert(cota2>4-j)
+			cota2=4-j
+			assert(cota2>=0)
 		i=i+1
+		assert(cota1>6-i)
+		cota1=6-i
+		assert(cota>=0)
+
+	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+
 	return jugando, ganador 
 
-def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
-	#Pre: N = 6 and M = 7         
-	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
+def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
 	#VAR
     	#ganador : int  
 		#jugando : bool  
 		#i : int  
 		#j : int  
-
+	assert(0<=i<6 and 0<=j<7)
+		
 	jugando,i = True,0
 
-	#cota=6-i
+	cota1=6-i
+	assert(cota1>=0)
 	while i<6:
 		j=0
-		#cota=4-j
+		cota2=4-j
+		assert(cota2>=0)
 		while j<4 and jugando==True:
 			#Conexion horizontal
 			if tabl[i][j]==tabl[i][j+1]==tabl[i][j+2]==tabl[i][j+3]==1:
@@ -239,23 +249,33 @@ def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+2)*142, 134 + i*88), 20, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j+3)*142, 134 + i*88), 20, 0)
 			j=j+1
+			assert(cota2>4-j)
+			cota2=4-j
+			assert(cota2>=0)
 		i=i+1
+		assert(cota1>6-i)
+		cota1=6-i
+		assert(cota1>=0)
+
+	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))
+		
 	return jugando, ganador
 
-def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
-	#Pre: N = 6 and M = 7       
-	# Post: (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
+def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
 	#VAR 
 		#jugando : bool  
 		#i : int  
-		#j : int  
+		#j : int 
+	assert(0<=i<6 and 0<=j<7)	 
 
 	jugando, i = True,0
 
-	#cota= 3-i
+	cota1= 3-i
+	assert(cota1>=0)
 	while i < 3:
 		j=0
-		#cota= 7-j
+		cota2= 7-j
+		assert(cota2>=0)
 		while j < 7 and jugando==1:
 			if tabl[i][j]==tabl[i+1][j]==tabl[i+2][j]==tabl[i+3][j]==1:
 				ganador=1
@@ -276,23 +296,32 @@ def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ):
 				pygame.draw.circle(pantalla, AMARILLO,(201 + j*142, 134 + (i+2)*88), 20, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + j*142, 134 + (i+3)*88), 20, 0)
 			j=j+1
+			assert(cota2>7-j)
+			cota2=7-j
+			assert(cota2>=0)
 		i=i+1
+		assert(cota1>3-i)
+		cota1=3-i
+		assert(cota1>=0)
+	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+		
 	return jugando, ganador
 
-def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador=int):
-	#Pre: N = 6 and M = 7        
-	# Post:  (ganador=0 /\ jugando=False) \/ ((ganador=1 \/ ganador=2)/\(jugando=False))
+def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador=int) -> (bool, int) :
 	#VAR 
 	#jugando : bool  
 	#i : int  
 	#j : int  
 
+	assert(0<=i<6 and 0<=j<7)
 	jugando, i = True, 0
 
-	#cota=3-i
+	cota1=3-i
+	assert(cota1>=0)
 	while i < 3:
 		j=0
-		#cota=7-j
+		cota2=7-j
+		assert(cota2>=0)
 		while j < 7 and jugando==True:
 			#Conexion diagonal secundaria
 			if j>2 and tabl[i][j]==tabl[i+1][j-1]==tabl[i+2][j-2]==tabl[i+3][j-3]==1:
@@ -315,12 +344,20 @@ def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-2)*142, 134 + (i+2)*88), 20, 0)
 				pygame.draw.circle(pantalla, AMARILLO,(201 + (j-3)*142, 134 + (i+3)*88), 20, 0)
 			j=j+1
+			assert(cota2>7-j)
+			cota2=7-j
+			assert(cota2>=0)
 		i=i+1
+		assert(cota1>3-i)
+		cota1=3-i
+		assert(cota>=0)
+	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))
+		
 	return jugando, ganador
 
 # Aqui culminan las verificaciones de las posibilidades de ganar el juego con un 4 en raya.
 
-def IA( tabl=list, i=int, j=int ):
+def IA( tabl=list, i=int, j=int ) -> (list,int,int):
 	#Pre: 0<=i<6 and 0<=j<7
 	#Post: 0<=i<6 and 0<=j<7
 
@@ -329,65 +366,99 @@ def IA( tabl=list, i=int, j=int ):
 	#max:int  					# la vi (vertical inferior queda descartada), y tiende a
 	#hi,hd,vs,dps,dss: int  			# escoger jugadas horizontales.
 
+	assert(0<=i<6 and 0<=j<7)
+
 	hi,hd,vs,dps,dpi,dss,dsi=0,0,0,0,0,0,0
 								
 	z=1					# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-z				# linea horizontal hacia la izquierda de su posicion
+	cota= 4-z          # linea horizontal hacia la izquierda de su posicion
+	assert(cota>=0)				
 	while z<4 and valida(tabl,i,j-z): 	
 		hi= hi+1		
 		z = z+1
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
 
-	z=1				    	# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-z				# linea horizontal hacia la derecha de su posicion
+	z=1				       # aqui cuenta las 3 proximas posibles jugadas para armar una
+	cota= 4-z			   # linea horizontal hacia la derecha de su posicion
+	assert(cota>=0)				
 	while z<4 and valida(tabl,i,j+z):
 		hd = hd+1
 		z = z+1
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
 
 	
 	if valida(tabl,i-1,j):		# aqui solo se cuenta si la proxima posible jugada para armar una
 		vs = vs+1		    	# linea vertical, justo arriba de su posicion
 
 	z=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
-	#cota= 4-z				# linea diagonal principal superior (raro pero posible)
+	cota= 4-z				# linea diagonal principal superior (raro pero posible)
+	assert(cota>=0)	
 	while z<4 and valida(tabl,i-z,j-z):	 
 		dps = dps+1
 		z = z+1
-
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
 
 	z=1				        # aqui cuenta las 3 proximas posibles jugadas para armar una	
-	#cota= 4-z				# linea diagonal principal inferior (raro pero posible)                
+	cota= 4-z				# linea diagonal principal inferior (raro pero posible) 
+	assert(cota>=0)	               
 	while z<4 and valida(tabl,i+z,j+z):	 
 		dpi = dpi+1
 		z = z+1
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
 	
 
 	z=1	     			    # aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota= 4-z			    # linea diagonal secundaria superior (raro pero posible)
+	cota= 4-z			    # linea diagonal secundaria superior (raro pero posible)
+	assert(cota>=0)	
 	while z<4 and valida(tabl,i-z,j+z):
 		dss = dss+1
 		z = z+1
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
+
 
 	
 	z=1					# aqui cuenta las 3 proximas posibles jugadas para armar una
-	#cota=4-z				# diagonal secundaria inferior (raro pero posible)
+	cota=4-z			# diagonal secundaria inferior (raro pero posible)
+	assert(cota>=0)	
 	while z<4 and valida(tabl,i+z,j-z):
 		dsi = dsi+1
 		z = z+1
+		assert(cota>4-z)
+		cota=4-z
+		assert(cota>=0)
 	
 	z=0
 	Max=max(hi,hd,vs,dps,dpi,dss,dsi)  	# buscamos la jugada mas "favorable"
 	if Max==0:			# si la pieza se encuentra rodeada, se busca un nuevo
 		i,j = 5,6			# lugar donde jugar.
-		#cota = i
+		cota2 = i
+		assert(cota2>=0)	
 		while 0 <= i < 6 and z==0:
-		#cota = j
+			cota3 = j
+			assert(cota3>=0)	
 			while 0 <= j < 7 and z==0:
 				if valida(tabl,i,j):
 					tabl[i][j]=2
 					pygame.draw.circle(pantalla,AZUL, (201 + j*142, 134 + i*88), 30, 0)
 					z=1
 				j=j-1
+				assert(cota3>j)
+				cota3=j
+				assert(cota3>=0)
 			i=i-1
+			assert(cota2>i)
+			cota2=i
+			assert(cota2>=0)
 			
 	elif Max==hi:			# la ejecutamos
 		tabl[i][j-1]=2
@@ -460,7 +531,7 @@ def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=in
 # Descripcion: Funcion que lee el archivo de guardado y almacena su informacion
 #			en una lista para posteriormente sobreescribir las variables de juego. 
 # Parametros:
-def CargarJuego(archivo=str):
+def CargarJuego(archivo=str) ->list:
 	with open(archivo,'r+') as f:
 		oldcontenido = f.readlines()
 		contenido = [oldcontenido[i].rstrip() for i in range(7)]
@@ -469,7 +540,7 @@ def CargarJuego(archivo=str):
 # Descripcion: Funcion que escibe en el archivo de guardado los valores actuales
 #				de las variables de juego(nombre,turno,nivel,tabl,i,j,tabv). 
 # Parametros:
-def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
+def GuardarJuego(archivo=str, estructura=valoresdejuego): #no tiene salida
 	with open(archivo,'w') as f:
 		f.write(anterior.nombreusuario+"\n")
 		f.write(str(anterior.turno)+"\n")
@@ -481,7 +552,7 @@ def GuardarJuego(archivo=str, estructura=valoresdejuego):#no tiene salida
 	f.closed
 
 #Funciones referentes a la parte grafica 
-def dibujartableronuevo(tabl=list):        #->void
+def dibujartableronuevo(tabl=list)  -> 'void':
 	assert(True)
 	#Postcondicion:se dibuja en una ventana grafica un tablero con filas y columnas de color verde
 	#Cuadrado exterior
@@ -534,7 +605,7 @@ def dibujartableronuevo(tabl=list):        #->void
 				pygame.draw.circle(pantalla, NEGRO, (201 + j*142, 134 + i*88), 30, 0)
 	pygame.display.flip()
 
-def cargarTablero(tabl=list): #-> 'void':
+def cargarTablero(tabl=list) -> 'void':
 	for i in range(0,6):
 		for j in range(0,7):
 			if tabl[i][j] == 1:
@@ -601,7 +672,7 @@ while dentro :							# Dentro del juego
 			dibujartableronuevo(tabl)			# Dibujamos un tablero grafico nuevo
 			cargarTablero(tabl)			# Dibujamos las jugadas cargadas del tablero
 			jugando=True				# Salir del Menu entrar en partida
-			juegauser=True				# El jugador debe empezar en su turno
+			jugadaUser=True				# El jugador debe empezar en su turno
 		
 		elif partida==2:	# El jugador decide que quiere salir del juego
 			dentro=False	# Salimos del loop del juego
