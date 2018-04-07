@@ -543,10 +543,10 @@ def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=in
 #			en una lista para posteriormente sobreescribir las variables de juego. 
 # Parametros:
 def CargarJuego(archivo=str) ->list:
-	#try:
-	#	assert(open(archivo,'r+'))
-	#except:
-		#print("No se encuentra partida cargada, guarde una partida primero")
+	try:
+		assert(open(archivo,'r+'))
+	except:
+		print("No se encuentra partida cargada, guarde una partida primero")
 	with open(archivo,'r+') as f:
 		oldcontenido = f.readlines()
 		contenido = [oldcontenido[i].rstrip() for i in range(7)]
@@ -687,7 +687,7 @@ while dentro :							# Dentro del juego
 			dibujartableronuevo(tabl)			# Dibujamos un tablero grafico nuevo
 			cargarTablero(tabl)			# Dibujamos las jugadas cargadas del tablero
 			jugando=True				# Salir del Menu entrar en partida
-			jugadaUser=True				# El jugador debe empezar en su turno
+			jugadauser=True				# El jugador debe empezar en su turno
 		
 		elif partida==2:	# El jugador decide que quiere salir del juego
 			dentro=False	# Salimos del loop del juego
@@ -698,7 +698,8 @@ while dentro :							# Dentro del juego
 		if turno >= 43 :			# el tablero se encuentra lleno, se declara empate
 			jugando=False
 			ganador=0
-		elif turno < 43 :			# el tablero aun no ha llenado se sigue jugando					
+		elif turno < 43 :			# el tablero aun no ha llenado se sigue jugando	
+			ganador=0				
 			if juegauser :			# Turno del usuario
 				guardar=bool(input("Desea guardar su partida?(Si=Enter)(No=Else)"))
 				if not(guardar): #escribimos en alrchivo de guardado las variales de juego actuales
