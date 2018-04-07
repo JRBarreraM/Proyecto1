@@ -60,6 +60,7 @@ pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pan
 # Lista de subprogramas (funciones) que usa el esqueleto principal:
 
 #Descripcion: procedimiento que almacena los resultados, ya sean victorias o empates, en un arreglo 
+# Parametros:
 def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	assert(ganador==0 or ganador==1 or ganador==2)
 	
@@ -81,6 +82,7 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	return juegauser	
 
 #Descripcion: Tomando el tablero y las coordenadas de la jugada, devuelve si la jugada cumple las reglas del juego.
+# Parametros:
 def valida( tabl = list, i=int, j=int ) -> bool:
 	# VAR:
 		#valida : bool  
@@ -102,13 +104,13 @@ def valida( tabl = list, i=int, j=int ) -> bool:
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
 
-	assert((valida and (tabl[i][j]==0) and i==5) or (valida and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0)) or (not(valida) and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0)) or (not(valida) and ((tabl[i][j]!=0))) or (not(valida) and (i < 0 or i > 5 or j < 0 or j > 6)))                                                                
+	#assert((valida and (tabl[i][j]==0) and i==5) or (valida and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0)) or (not(valida) and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0)) or (not(valida) and ((tabl[i][j]!=0))) or (not(valida) and (i < 0 or i > 5 or j < 0 or j > 6)))
 	
 	return valida
 	
 #Descripcion: Pide al usuario la columna donde desea jugar, toma el tabl y lo devuelve mas las coordenadas de la jugada
+# Parametros:
 def jugadaUser( tabl = list ) -> (list,int,int) :
-	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
 		# x : int
 		# y : int
@@ -132,7 +134,7 @@ def jugadaUser( tabl = list ) -> (list,int,int) :
 
 	return tabl,x,y
 
-#Descripcion: funcion que verifica que la jugada que introdujo el usuario es valida
+#Descripcion: Solicita de forma robusta una columna para que el usurio juegue, devuelve la columna valida
 def validarcolumnauser()->int:
 	# VAR:
 		# y : int
@@ -147,9 +149,9 @@ def validarcolumnauser()->int:
 	assert(0<=y<=6)
 	return y
 
-#Descripcion: #procedimeto que busca en el tablero una jugada ganadora
+#Descripcion: Busca en el tablero un 4 en linea y modifica si se sigue jugando y quien gano.
+# Parametros:
 def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int) -> (bool,int): 
-	# Post:  (ganador=0 and jugando=1) \/ ((ganador=1 \/ ganador=2)and(jugando=0))
 	# VAR:
 		# Rvictoria : list
 	assert(True)
@@ -174,16 +176,15 @@ def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int) -> (bool,int):
 
 	return jugando, ganador
 
-#A continuacion se encuentran procedimientos que verifican las distintas condiciones para que un jugador gane el juego formando 4 en raya.
-#,es decir, de form horizontal,vertical o diaonal
+#A continuacion se encuentran los subprogramas que verifican las distintas formas de 4 en raya.
 
+# Parametros:
 def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
 	#VAR
-    #ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
-	#jugando : bool     //variable booleana que indica que se esta realizando una partida
-	#i : int            //coordenadas de las filas de la matriz A
-	#j : int            //coordenadas de las columnas de la matriz A
-  
+    	#ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
+		#jugando : bool     //variable booleana que indica que se esta realizando una partida
+		#i : int            //coordenadas de las filas de la matriz A
+		#j : int            //coordenadas de las columnas de la matriz A
 
 	assert(0<=i<6 and 0<=j<7)
 
@@ -229,13 +230,13 @@ def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=
 
 	return jugando, ganador 
 
+# Parametros:
 def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
-	#VAR
     #VAR
-    #ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
-	#jugando : bool     //variable booleana que indica que se esta realizando una partida
-	#i : int            //coordenadas de las filas de la matriz A
-	#j : int            //coordenadas de las columnas de la matriz A
+   		#ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
+		#jugando : bool     //variable booleana que indica que se esta realizando una partida
+		#i : int            //coordenadas de las filas de la matriz A
+		#j : int            //coordenadas de las columnas de la matriz A
 	assert(0<=i<6 and 0<=j<7)
 		
 	jugando,i = True,0
@@ -280,13 +281,13 @@ def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -
 		
 	return jugando, ganador
 
+# Parametros:
 def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> (bool, int) :
-	#VAR 
 	#VAR
-    #ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
-	#jugando : bool     //variable booleana que indica que se esta realizando una partida
-	#i : int            //coordenadas de las filas de la matriz A
-	#j : int            //coordenadas de las columnas de la matriz A
+	    #ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
+		#jugando : bool     //variable booleana que indica que se esta realizando una partida
+		#i : int            //coordenadas de las filas de la matriz A
+		#j : int            //coordenadas de las columnas de la matriz A
 	assert(0<=i<6 and 0<=j<7)	 
 
 	jugando, i = True,0
@@ -328,13 +329,13 @@ def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> 
 		
 	return jugando, ganador
 
+# Parametros:
 def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador=int) -> (bool, int) :
 	#VAR 
-	#VAR
-    #ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
-	#jugando : bool     //variable booleana que indica que se esta realizando una partida
-	#i : int            //coordenadas de las filas de la matriz A
-	#j : int            //coordenadas de las columnas de la matriz A  
+		#ganador : int      //variable entera que indica depdiendo de su valor quien gano el juego o si hubo empate
+		#jugando : bool     //variable booleana que indica que se esta realizando una partida
+		#i : int            //coordenadas de las filas de la matriz A
+		#j : int            //coordenadas de las columnas de la matriz A  
 
 	assert(0<=i<6 and 0<=j<7)
 	jugando, i = True, 0
@@ -380,14 +381,13 @@ def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador
 
 # Aqui culminan las verificaciones de las posibilidades de ganar el juego con un 4 en raya.
 
-#Definicion: # para esta version de la IA solo nos interesan las jugadas que puede hacer a partir de la anterior, por lo que  la vi (vertical inferior queda descartada), y tiende a escoger jugadas horizontales.
+#Definicion: IA toma la jugada anterior y decide donde deberia jugar ahora.
+# Parametros:
 def IA( tabl=list, i=int, j=int ) -> (list,int,int):
-	#Post: 0<=i<6 and 0<=j<7
-
 	#VAR:						
-	#z:int   					
-	#Max:int 					
-	#hi,hd,vs,dps,dss: int  			
+		#z:int   					
+		#Max:int 					
+		#hi,hd,vs,dps,dss: int  			
 
 	assert(0<=i<6 and 0<=j<7)
 
@@ -526,6 +526,7 @@ def IA( tabl=list, i=int, j=int ) -> (list,int,int):
 		i=i+1
 		j=j-1	
 
+	assert(0<=i<=5 and 0<=j<=6)
 	return tabl,i,j
 	
 #Clase que nos almacenar los valores de juego
@@ -565,8 +566,9 @@ def CargarJuego(archivo=str) ->list:
 		contenido = [oldcontenido[i].rstrip() for i in range(7)]
 	f.closed
 	return contenido
+
 # Descripcion: Funcion que escibe en el archivo de guardado los valores actuales
-#				de las variables de juego(nombre,turno,nivel,tabl,i,j,tabv). 
+#				de las variables de juego(nombreusuario,turno,nivel,tabl,i,j,tabv). 
 # Parametros:
 def GuardarJuego(archivo=str, estructura=valoresdejuego): #no tiene salida
 	with open(archivo,'w') as f:
@@ -581,8 +583,6 @@ def GuardarJuego(archivo=str, estructura=valoresdejuego): #no tiene salida
 
 #Funciones referentes a la parte grafica 
 def dibujartableronuevo(tabl=list)  -> 'void':
-	assert(True)
-	#Postcondicion:se dibuja en una ventana grafica un tablero con filas y columnas de color verde
 	#Cuadrado exterior
 	pygame.draw.line(pantalla, VERDE, (130, 90), (130, 620))
 	pygame.draw.line(pantalla, VERDE, (1120, 90), (1120, 620))
