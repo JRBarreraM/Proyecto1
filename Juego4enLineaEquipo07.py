@@ -1,6 +1,6 @@
 # Juego4enLineaEquipo07.py
 #
-# DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
+# DESCRIPCION: Programa que permite a un usuario jugar al 4 en linea \
 # contra una IA con 2 niveles de dificultad (fácil, jugadas random y medio,\
 # jugadas controladas por la IA), a traves de la terminal de la interfaz grafica.
 #
@@ -11,29 +11,28 @@
 
 """
    CONSTANTES Logicas	#informacion proporcionada por el usuriario que el programa no modifica:		
-   	nombreusuario : str	# nombre del usuario que esta jugando la partida
-	nivel : int  		# la dificultad escogida nivel1=Facil y nivel2=Medio, si desea salir
-	partida : int	  	# si se escoge 0 se inicia una partida, 1 se carga una, 2 se cierra el juego.
-	seguir : bool  		# si se desea o no rendirse en la partida actual.
-	guardar : bool		# si se desea o no guardar el estado actual de la partida en curso.
+		nombreusuario : str		# nombre del usuario que esta jugando la partida
+		nivel : int  			# la dificultad escogida nivel1=Facil y nivel2=Medio, si desea salir
+		partida : int	  		# si se escoge 0 se inicia una partida, 1 se carga una, 2 se cierra el juego.
+		seguir : bool  			# si se desea o no rendirse en la partida actual.
+		guardar : bool			# si se desea o no guardar el estado actual de la partida en curso.
   
    VARIABLES Logicas
-	tabl : list		# el tablero logico del juego
-	tabv : list		# tablero de victorias globales del juego
-	jugando : bool  	# controla si se esta en partida o en el menu
-	turno : int  		# contador de los turnos de la partida
-	juegauser : int		# a quien le toca jugar(True para user, False para IA)
-	ganador : int  		# el primero en cumplir las condiciones victoria
-	dentro : bool  		# controla si esta dentro del programa
-	movida : bool  		# permite al nivel1 reintentar hasta hacer una jugada
-	x : int			# Almacena la fila jugada por el usuario
-	y : int			# Almacena la columna jugada por el usuario
-	i : int  		# fila de la jugada de la IA
-	j : int  		# columna de la jugada de la IA
-	Ruser : list		# Almacena los resultados de jugadaUser()
-	Rvictoria : list	# Almacena los resultados de Rvictoria()
-	RIA : list		# Almacena los resultados de IA()
-	bound : int  		# cota que permite que los ciclos terminen
+		tabl : list				# el tablero logico del juego
+		tabv : list				# tablero de victorias globales del juego
+		jugando : bool  		# controla si se esta en partida o en el menu
+		turno : int  			# contador de los turnos de la partida
+		juegauser : int			# a quien le toca jugar(True para user, False para IA)
+		ganador : int  			# el primero en cumplir las condiciones victoria
+		dentro : bool  			# controla si esta dentro del programa
+		movida : bool  			# permite al nivel1 reintentar hasta hacer una jugada
+		x : int					# Almacena la fila jugada por el usuario
+		y : int					# Almacena la columna jugada por el usuario
+		i : int  				# fila de la jugada de la IA
+		j : int  				# columna de la jugada de la IA
+		Ruser : list			# Almacena los resultados de jugadaUser()
+		Rvictoria : list		# Almacena los resultados de Rvictoria()
+		RIA : list				# Almacena los resultados de IA()
 """	
 import pygame				
 import os		
@@ -60,7 +59,7 @@ pygame.display.set_caption("4 En Raya")                 # Coloca titulo a la pan
 
 # Lista de subprogramas (funciones) que usa el esqueleto principal:
 
-#Descripcion: procedimiento que almacena los resultados, ya sean vicotria o empates, en un arreglo 
+#Descripcion: procedimiento que almacena los resultados, ya sean victorias o empates, en un arreglo 
 def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	assert(ganador==0 or ganador==1 or ganador==2)
 	
@@ -81,7 +80,7 @@ def resultados(tabv=list,ganador=int,juegauser=bool) -> bool:
 	print("\n")
 	return juegauser	
 
-#Descripcion:esta es la funcion valida que sin importar que la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
+#Descripcion: Tomando el tablero y las coordenadas de la jugada, devuelve si la jugada cumple las reglas del juego.
 def valida( tabl = list, i=int, j=int ) -> bool:
 	# VAR:
 		#valida : bool  
@@ -103,7 +102,7 @@ def valida( tabl = list, i=int, j=int ) -> bool:
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
 
-	#assert(valida==((tabl[i][j]==0) and i==5) or valida==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0)) or not(valida)==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0)) or (not(valida)==tabl[i][j]!=0)or (not(valida)==i < 0 or i > 5 or j < 0 or j > 6))                                                                
+	assert((valida==((tabl[i][j]==0) and i==5)) or (valida==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0))) or (not(valida)==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0))) or (not(valida)==((tabl[i][j]!=0))) or (not(valida)==(i < 0 or i > 5 or j < 0 or j > 6)))                                                                
 	
 	return valida
 	
