@@ -103,12 +103,11 @@ def valida( tabl = list, i=int, j=int ) -> bool:
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
 
-	#assert(valida==((tabl[i][j]==0) and i==5) or (tabl[i+1][j]==0) and i<5 or ((tabl[i+1][j]!=0) and i<5))	
+	#assert(valida==((tabl[i][j]==0) and i==5) or valida==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0)) or not(valida)==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0)) or (not(valida)==tabl[i][j]!=0)or (not(valida)==i < 0 or i > 5 or j < 0 or j > 6))                                                                
 	
 	return valida
 
 def jugadaUser( tabl = list ) -> (list,int,int) :
-	# Pre: True 
 	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
 		# x : int
@@ -129,7 +128,7 @@ def jugadaUser( tabl = list ) -> (list,int,int) :
 	pygame.draw.circle(pantalla,ROJO , (201 + y*142, 134 + x*88), 30, 0)
 	#Dibujar circulo rojo en la posicion correspodiente	
 
-	#assert(not(valida(x,y)==True) or tabl[x][y] == 1)
+	assert(not(valida(tabl,x,y)==True) or tabl[x][y] == 1)
 
 	return tabl,x,y
 
@@ -169,7 +168,7 @@ def victoria(tabl=list,i=int,j= int,jugando=bool,ganador=int) -> (bool,int):
 				jugando=Rvictoria[0]
 				ganador=Rvictoria[1]
 
-	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+	assert((ganador==0 and jugando==True) or ((ganador==1 or ganador==2) and (jugando==False)))	
 
 	return jugando, ganador
 
@@ -219,7 +218,7 @@ def victoriadiagonalprincipal( tabl= list, i=int, j= int, jugando=bool, ganador=
 		cota1=6-i
 		assert(cota1>=0)
 
-	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+	assert((ganador==0 and jugando==True) or ((ganador==1 or ganador==2) and (jugando==False)))	
 
 	return jugando, ganador 
 
@@ -269,7 +268,7 @@ def victoriahorizontal( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -
 		cota1=6-i
 		assert(cota1>=0)
 
-	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))
+	assert((ganador==0 and jugando==True) or ((ganador==1 or ganador==2) and (jugando==False)))	
 		
 	return jugando, ganador
 
@@ -315,7 +314,7 @@ def victoriavertical( tabl= list, i=int, j= int, jugando=bool, ganador=int ) -> 
 		assert(cota1>3-i)
 		cota1=3-i
 		assert(cota1>=0)
-	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))	
+	assert((ganador==0 and jugando==True) or ((ganador==1 or ganador==2) and (jugando==False)))	
 		
 	return jugando, ganador
 
@@ -363,14 +362,13 @@ def victoriadiagonalsecundaria( tabl= list, i=int, j= int, jugando=bool, ganador
 		assert(cota1>3-i)
 		cota1=3-i
 		assert(cota1>=0)
-	#assert((ganador==0 and jugando==False) or ((ganador==1 or ganador==2) and (jugando==False)))
-		
+
+	assert((ganador==0 and jugando==True) or ((ganador==1 or ganador==2) and (jugando==False)))	
 	return jugando, ganador
 
 # Aqui culminan las verificaciones de las posibilidades de ganar el juego con un 4 en raya.
 
 def IA( tabl=list, i=int, j=int ) -> (list,int,int):
-	#Pre: 0<=i<6 and 0<=j<7
 	#Post: 0<=i<6 and 0<=j<7
 
 	#VAR:						# para esta version de la IA solo nos interesan las jugadas
@@ -514,6 +512,7 @@ def IA( tabl=list, i=int, j=int ) -> (list,int,int):
 		pygame.draw.circle(pantalla,AZUL, (201 + (j-1)*142, 134 + (i+1)*88), 30, 0)
 		i=i+1
 		j=j-1	
+
 	return tabl,i,j
 	
 #Clase que nos almacenar los valores de juego
@@ -544,10 +543,10 @@ def actualizacion(estructura=valoresdejuego,nombreusuario=str,turno=int,nivel=in
 #			en una lista para posteriormente sobreescribir las variables de juego. 
 # Parametros:
 def CargarJuego(archivo=str) ->list:
-	try:
-		assert(open(archivo,'r+'))
-	except:
-		print("No se encuentra partida cargada, guarde una partida primero")
+	#try:
+	#	assert(open(archivo,'r+'))
+	#except:
+		#print("No se encuentra partida cargada, guarde una partida primero")
 	with open(archivo,'r+') as f:
 		oldcontenido = f.readlines()
 		contenido = [oldcontenido[i].rstrip() for i in range(7)]
@@ -659,7 +658,7 @@ while dentro :							# Dentro del juego
 			tabl=[[0]*7 for i in range(6)]			# Crear nuevo tablero de juego logico.
 			jugando=True					# Salir del menu entrar en partida
 			turno=1						# Se empieza el primer turno
-			
+			ganador=0
 			while True: # Se permite al usuario introducir nuevamente su nombre
 				try: 
 					nombreusuario=str(input("Coloque su nombre, por favor:"))
