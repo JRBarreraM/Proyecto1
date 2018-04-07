@@ -102,11 +102,11 @@ def valida( tabl = list, i=int, j=int ) -> bool:
 	elif i < 0 or i > 5 or j < 0 or j > 6:
 		valida=False
 
-	assert((valida==((tabl[i][j]==0) and i==5)) or (valida==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0))) or (not(valida)==((tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0))) or (not(valida)==((tabl[i][j]!=0))) or (not(valida)==(i < 0 or i > 5 or j < 0 or j > 6)))                                                                
+	assert((valida and (tabl[i][j]==0) and i==5) or (valida and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]!=0)) or (not(valida) and (tabl[i][j]==0) and i<5 and (tabl[i+1][j]==0)) or (not(valida) and ((tabl[i][j]!=0))) or (not(valida) and (i < 0 or i > 5 or j < 0 or j > 6)))                                                                
 	
 	return valida
 	
-#Descripcion:procedimiento que le pide al usuario la jugada que va a realizar
+#Descripcion: Pide al usuario la columna donde desea jugar, toma el tabl y lo devuelve mas las coordenadas de la jugada
 def jugadaUser( tabl = list ) -> (list,int,int) :
 	# Post:  (valida(x,y)=True => tabl[x][y] = 1])
 	# VAR:
