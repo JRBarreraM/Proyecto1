@@ -89,8 +89,7 @@
 #Aqui termina el esqueleto del programa, de aqui en adelante se colocan
 # todos los procedimientos que llama.
 
-proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of int)  
-{ Pre: True }
+proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of int)  #procedimiento que le pide al usuario la jugada que va a 	{ Pre: True }									      #hacer	
 { Post:  (valida(x,y)=1 => A[x][y] = 1]) /\ (valida(x,y)=0 => A[x][y] = 0) }
 [
 	VAR
@@ -99,14 +98,13 @@ proc jugadaUser(  in x : int ; in y : int ; in-out : A : array [0..6)x[0..7) of 
 
 		ganador := 0;
 		jugando := False;
-		
-		do 		
+		 		
 			if valida(x,y) ->
 				A[x][y] := 1;
 				victoria(A,x,y); 
 			[] not valida(i,j) ->			#se pide al usuario que intente otra jugada
 				skip;
-		od		
+				
 ]
 
 # Esta es la funcion valida que sin importar que la coordenada esta o no en el tablero (la matriz A), nos dice si la jugada es valida
@@ -171,9 +169,11 @@ proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out gan
 	jugando := True;
 
 	i:=0;
+	{Inv 0<=i<=3 /\    }
 	{bound 6-i}
 	do i < 3 ->
 		j:=0;
+		{Inv 0<=i<=3 /\ 0<=j<=4 /\  }
 		{bound 4-j}
 		do j < 4 /\ jugando=True ->
 			#Conexion diagonal principal
@@ -205,9 +205,11 @@ proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:i
 
 	jugando,i := True,0;
 
+	{Inv 0<=i<=6 /\    }
 	{bound 6-i}
 	do i<6->
 		j:=0;
+		{Inv 0<=i<=6 /\ 0<=j<=4 /\ }
 		{bound 4-j}
 		do j<4 /\ jugando=True->
 			#Conexion horizontal
@@ -239,9 +241,11 @@ proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int;
 
 	jugando, i := True,0;
 
+	{0<=i<=3 /\ }
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
+		{Inv 0<=i<=3 /\ 0<=j<=7 /\ }
 		{bound 7-j}
 		do j < 7 /\ jugando=True ->
 			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
@@ -271,9 +275,11 @@ proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); in i,j : int; out ga
 
 	jugando, i := True, 0;
 
+	{Inv 0<=i<=3 /\ (%exist k,l:0<=k<i /\ 0<=l<j:A[k][l] }
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
+		{Inv 0<=i<=3 /\ 0<=j<=7 /\ }
 		{bound 7-j}
 		do j < 7 /\ jugando=True ->
 			#Conexion diagonal secundaria
@@ -308,9 +314,11 @@ proc Inicio(in-out A: array [0..6)x[0..7) of int) 	#procedimiento que sirve para
 	#dificultad:"Seleccione la dificultad:(1=basico,2=medio)"
 
 	i:=0;
+	{Inv 0<=i<=6 /\ (%forall k,l : 0<=k<i /\ 0<=l<j : A[k][l]=0)}
 	{bound 6-i}
 	do i<6->
 		j:=0;
+		{Inv 0<=i<=6 /\ 0<=j<=7 /\ (%forall k,l : 0<=k<i /\ 0<=l<j : A[k][l]=0) /\  (%forall l :0<=l<j : A[i][l]=0) }
 		{bound 7-j}
 		do j<7->
 			A[i][j]:=0;
@@ -395,15 +403,17 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 
 	hi,hd,vs,dps,dpi,dss,dsi:=0,0,0,0,0,0,0;
 								
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	{bound 4-z}			# linea horizontal hacia la izquierda de su posicion
+	z:=1;					                    # aqui cuenta las 3 proximas posibles jugadas para armar una
+	{Inv 0<z<=4 /\ hi=(%sigma k:1<=k<z /\ valida(A,k,j-z) :1)}  # linea horizontal hacia la izquierda de su posicion
+	{bound 4-z}			       
 	do z<4 /\ valida(A,i,j-z) -> 	
 		hi:= hi+1;		
 		z:=z+1;
 	od
 
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	{bound 4-z}			# linea horizontal hacia la derecha de su posicion
+	z:=1;				                           # aqui cuenta las 3 proximas posibles jugadas para armar una
+	{Inv 0<z<=4 /\ hd=(%sigma k:1<=k<z /\ valida(A,k,j+z):1)}  # linea horizontal hacia la derecha de su posicion
+        {bound 4-z}			
 	do z<4 /\ valida(A,i,j+z)->
 		hd:= hd+1;
 		z:=z+1;
@@ -415,29 +425,33 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 		skip;
 	fi;
 
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una	
-	{bound 4-z}			# linea diagonal principal superior (raro pero posible)
+	z:=1;
+	{Inv 0<z<=4 /\ dps=(%sigma k:1<=k<z /\ valida(A,k-z,j-z):1)}	# aqui cuenta las 3 proximas posibles jugadas para armar una	
+	{bound 4-z}			                                # linea diagonal principal superior (raro pero posible)
 	do z<4 /\ valida(A,i-z,j-z)->	 
 		dps:= dps+1;
 		z:=z+1;
 	od;
 
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una	
-	{bound 4-z}			# linea diagonal principal inferior (raro pero posible)                
+	z:=1;
+	{Inv 0<z<=4 /\ dpi=(%sigma k:1<=k<z /\ valida(A,k+z,j+z):1)}	 # aqui cuenta las 3 proximas posibles jugadas para armar una	
+	{bound 4-z}			                                 # linea diagonal principal inferior (raro pero posible)                
 	do z<4 /\ valida(A,i+z,j+z)->	 
 		dpi:= dpi+1;
 		z:=z+1;
 	od;
 
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	{bound 4-z}			# linea diagonal secundaria superior (raro pero posible)
+	z:=1;	
+	{Inv 0<z<=4 /\ dss=(%sigma k:1<=k<z /\ valida(A,k-z,j+z):1)}     # aqui cuenta las 3 proximas posibles jugadas para armar una
+	{bound 4-z}			                                 # linea diagonal secundaria superior (raro pero posible)
 	do z<4 /\ valida(A,i-z,j+z)->
 		dss:= dss+1;
 		z:=z+1;
 	od;
 	
-	z:=1;				# aqui cuenta las 3 proximas posibles jugadas para armar una
-	{bound 4-z}			# diagonal secundaria inferior (raro pero posible)
+	z:=1;
+	{Inv 0<z<=4 /\ dsi=(%sigma k:1<=k<z /\ valida(A,k+z,j-z):1)} # aqui cuenta las 3 proximas posibles jugadas para armar una
+	{bound 4-z}			                             # diagonal secundaria inferior (raro pero posible)
 	do z<4 /\ valida(A,i+z,j-z)->
 		dsi:= dsi+1;
 		z:=z+1;
@@ -446,14 +460,16 @@ proc IA(in-out i,j : int ; in-out A: array [0..6)x[0..7) of int)
 	Max:=max(hi,hd,vs,dps,dpi,dss,dsi);	# buscamos la jugada mas "favorable"
 		if Max=0->			# si la pieza se encuentra rodeada, se busca un nuevo
 			i,j:=5,6;		# lugar donde jugar.
+			{Inv 0<=i<=6}
 			{bound i}
 			do 0 <= i < 6 and z=0->
+			{Inv 0<=j<=7}
 			{bound j}
 				do  0 <= j < 7 and z=0 ->
-					if valida(i,j) ->
+					if valida(A,i,j) ->
 						A[i][j]:=2;
 						z:=1;
-					[] !valida(i,j) ->
+					[] !valida(A,i,j) ->
 						skip
 					fi
 					j:=j-1;
