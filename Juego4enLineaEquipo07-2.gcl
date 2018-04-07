@@ -1,0 +1,507 @@
+##
+# Juego4enLineaEquipo07.gcl
+#
+# DESCRIPCION: algoritmo que permite a un usuario jugar al 4 en linea \
+# contra una IA con 2 niveles de dificultad (facil y medio), a traves de la \
+# terminal de la interfaz grafica.
+#
+# Autores: 
+#	Br. Jose Barrera y Alfredo Cruz.
+#
+# Ultima modificacion: 16/03/2018.
+
+[
+   VAR
+	A : array [0..6)x[0..7) of int;
+	jugando : bool;
+	turno : int;
+	jugador : int;
+	juega : int;
+	ganador : int;
+	 
+	{ %forall i,j: 0<=i<6 /\ 0<=j<7: S[i][j]=0 /\ (nivel=1 \/ nivel=2)}
+
+	jugando,turno,ganador,juega:=False,1,0,True;
+	{bound 43 - turno}
+	do jugando ->							#en partida
+		if turno = 42 ->
+			jugando:=0
+		[] turno < 42 ->
+			if juega ->
+				abandonar();
+					jugadaUser(A,i,j);
+			[] ¬juega ->
+				juegaIA(A,nivel);
+			turno := turno+1
+			juega := ¬juega
+			fi
+		fi;
+
+		if ganador = 0 ->
+			juega := False 
+		[] ganador = 1 ->
+			juega := True
+		[] ganador = 2 ->
+			juega := True
+
+	[] ¬jugando ->							#en menu
+		resultados( ganador );
+		nuevapartida( decision );
+		Inicio(A);
+
+	od
+	  
+   { }
+]
+
+func abandonar(i : int) -> 
+{ Pre: True }
+{ Post: i=0  => jugado=False /\ ganador=2 }
+[
+			if i = 9 /\ j = 9 ->
+			jugando := False;
+			ganador := 2;
+			fi
+]
+
+func jugadaUser( A : array [0..6)x[0..7); i : int ; j : int)-> A : array [0..6)x[0..7);
+{ Pre: True }
+{ Post:  (valida(i,j)=1 => A[i][j] = 1]) /\ (valida(i,j)=0 => A[i][j] = 0) }
+[
+	VAR
+		ganador : int;
+		jugando : int;
+
+		ganador := 0;
+		jugando := 0;
+
+		if valida(i,j) ->
+			A[i][j] := 1;
+			victoria(A,i,j); 
+		[] valida(i,j) ->
+			skip
+
+]
+
+func jugadaIA( A : array [0..6)x[0..7); nivel : int ) -> A : array [0..6)x[0..7)
+{ Pre: nivel = 2 \/ nivel = 1 }
+{ Post:  }
+[
+	VAR
+		movida : bool;
+		G : array [0..3)x[0..3);
+
+	if nivel = 1 ->
+		movida:=True;
+		do movida->						#tomamos prestada la funcion random de python
+			i:=random.randrange(6);
+			j:=random.randrange(7);
+			if valida(A,i,j) ->
+				A[i][j] := 2;
+				movida := False
+			[] !valida(A,i,j) ->
+				skip
+			fi
+
+	[] nivel = 2 ->
+		movida:=True;
+		i,j:=0,0;
+		do movida->
+			do i < 4 ->
+				j:=0;
+				{bound 4-j}
+				do j < 4 ->
+					if valida(A,i,j)->
+						G[i][j]:=1
+						G[i][j]:=2
+						G[i][j]:=3
+
+				
+
+
+
+			if valida(A,i,j) ->
+				A[i][j] := 2;
+				movida := False
+			[] !valida(A,i,j) ->
+				skip
+			fi		
+
+		
+			
+	fi
+]
+
+func valida( A : array [0..6)x[0..7); i,j : int ) -> bool
+{ Pre: True }
+{ Post:  (valida=0 /\ jugando=1) \/ (valida=1) }
+[
+	VAR
+		valida : bool;
+		if 0 <= i < 6 /\ 0 <= j < 7 ->
+			if A[i][j]=0 ->
+				if i=5 ->
+					valida:=True;
+				[] i<5 /\ A[i-1][j]!=0 ->
+					valida:=True;
+				[] i<5 /\ A[i-1][j]=0 ->
+					valida:=False;
+				fi
+			[] A[i][j]!=0 ->
+				valida:=False;
+			fi
+		[] i < 0 \/ i > 5 \/ j < 0 \/ j > 6 ->
+			valida:=False
+		fi
+
+	>> valida
+]
+		
+proc victoria(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool)
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+
+	victoriahorizontal(A,i,j);
+
+	if jugando ->
+		victoriavertical(A,i,j);
+		if jugando ->
+			victoriadiagonalprincipal(A,i,j);
+			if jugando ->
+				victoriadiagonalsecundaria(A,i,j)
+			[] ¬jugando ->
+				skip
+		[] ¬jugando ->
+			skip
+		fi
+	[] ¬jugando ->
+		skip
+	fi
+]
+
+proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando := 1;
+
+	i:=0;
+	{bound 6-i}
+	do i < 3 ->
+		j:=0;
+		{bound 4-j}
+		do j < 4 /\ jugando=1 ->
+			#Conexion diagonal principal
+			if A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			
+			[] A[i][j]=A[i+1][j+1]=A[i+2][j+2]=A[i+3][j+3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			fi
+			j:=j+1;
+		od;
+		i:=i+1;
+	od;
+]
+
+proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando,i := 1,0;
+
+	{bound 6-i}
+	do i<6->
+		j:=0;
+		{bound 4-j}
+		do j<4 and jugando=1->
+			#Conexion horizontal
+			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			[] A[i][j]=A[i][j+1]=A[i][j+2]=A[i][j+3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			fi
+			j:=j+1;
+		od
+		i:=i+1;
+	od
+]
+
+proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando, i := 1,0;
+
+	{bound 3-i}
+	do i < 3 ->
+		j:=0;
+		{bound 7-j}
+		do j < 7 /\ jugando=1 ->
+			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			[] A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=2:
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+			fi;
+			j:=j+1;
+		od
+		i:=i+1;
+	od
+]
+
+proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); in i,j : int; out ganador:int; out jugando:bool )
+{ Pre: N = 6 /\ M = 7  }
+{ Post:  (ganador=0 /\ jugando=1) \/ ((ganador=1 \/ ganador=2)/\(jugando=0)) }
+[
+	VAR
+    	ganador : int;
+		jugando : int;
+		i : int;
+		j : int;
+
+	jugando, i := 1, 0;
+
+	{bound 3-i}
+	do i < 3 ->
+		j:=0;
+		{bound 7-j}
+		do j < 7 /\ jugando=1 ->
+			#Conexion diagonal secundaria
+			if j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=1 ->
+				ganador:=1;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			[] j>2 /\ A[i][j]=A[i+1][j-1]=A[i+2][j-2]=A[i+3][j-3]=2 ->
+				ganador:=2;
+				jugando:=0;
+				A[i][j],A[i+1][j+1],A[i+2][j+2],A[i+3][j+3]:=3,3,3,3;
+
+			fi;
+			j:=j+1
+		od;
+		i:=i+1;
+	od
+]
+
+proc Inicio(in-out A: array [0..6)x[0..7) of int) 			#tambien arroja el nombre y la dificultad
+{Pre:}
+{Post:}
+[
+   	VAR:
+	A : array [0..6)x[0..7) of int;
+	#nombreusuario:"Coloque su nombre, por favor:");
+	#dificultad:"Seleccione la dificultad:(1=basico,2=medio)"
+
+	i:=0;
+	{bound 6-i}
+	do i<6->
+		j:=0;
+		{bound 7-j}
+		do j<7->
+			A[i][j]:=0;
+			j:=j+1;
+		od
+		i:=i+1;
+	od
+]
+
+proc nuevapartida( in decision : bool ; out jugando : bool )
+{Pre:}
+{Post:}
+[ 
+	#se le pregunta al usuario si desea o no volver a jugar o no, esto
+	#se almacena en la variable de entrada decision y cambia el valor
+	#de jugando
+	if decision->
+		jugando:=True;
+	[] ¬decision->
+		skip;                  #se sale del juego
+	fi
+]
+
+proc resultados(in ganador:int; out G: array [0..2) of int) 
+{Pre: ganador==0 \/ ganador==1 \/ ganador==2}
+{Post:}
+[
+	VAR:
+	ganador:int;
+	G: array [0..2) of int;								#Duda como esto se mantiene entre partidas?
+
+	if ganador=0->
+		G[0]:=G[0]+1;
+	[] ganador=1->
+		G[1]:=G[1]+1;
+	[] ganador=2->
+		G[2]:=G[2]+1;
+	fi
+]
+
+proc abandonar(in irse: bool;in-out jugando: bool)
+{Pre True}
+{Post irse=>jugando=False /\ not irse=>jugando=True}
+	#este procedimiento toma la decision del usuario, reflejada en la constante irse
+	#y modifica el valor de jugando para terminar o continuar la partida
+[
+	if irse->
+		jugando:=False;
+	[] not irse->
+		skip;
+	fi
+]
+
+proc terminar(in terminar: bool; out dentro: bool)
+{Pre True}
+{Post terminar=>dentro=False /\ not terminar=>dentro=True}
+	#este procedimiento toma la decision del usuario, reflejada en la constante terminar
+	#y modifica el valor de dentro para salirse o no del programa 
+
+	if terminar->
+		dentro:=False;
+	[] not terminar->
+		skip;
+	fi
+]
+
+proc primera(in-out A: array [0..6)x[0..7) of int ; out i,j : int)
+{Pre: True}
+{Post: i=5 /\ ((A[5][3]=2 /\ j=3) \/ (A[5][2]=2 /\ j=2))}
+[
+	VAR
+	i,j : int;
+	
+	if valida(5,3)->
+		A[5][3]:=2
+		i,j:=5,3;
+	[] not valida(5,3)->
+		A[5][2]:=2
+		i,j:=5,2;
+	fi
+]
+
+proc IA(in i,j : int ; in-out A: array [0..6)x[0..7) of int)
+{Pre}
+{Post}
+[
+	VAR:
+	x,y:int;
+	max:int;
+	hi,hd,vi,vd,dp,dpi,dsi,dsp: int;
+
+	hi,hd,vi,vs,dp,dpi,dsi,dsp:=0,0,0,0,0,0,0,0;
+	
+	x,y:=i,j
+	i:=1
+	do i<4 /\ valida(x+i,y+i)->
+		dps:= dps+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x-i,y-i)->
+		dpi:= dpi+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y+i)->
+		hd:= hd+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x,y-i)->
+		hi:= hi+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y)->
+		vs:= vs+1;
+		i:=i+1;
+	od
+	
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ if valida(x-i,y+i)->
+		dss:= dss+1;
+		i:=i+1;
+	od
+
+	i:=1;
+	{bound 4-i}
+	do i<4 /\ valida(x+i,y-i)->
+		dsi:= dsi+1;
+		i:=i+1;
+	od
+
+	max:=max(hi,hd,vs,dp,dpi,dsi,dsp)
+		if max=0->
+			i,j:=5,6;
+			{bound i}
+			do 0 <= i < 6->
+			{bound j}
+				do  0 <= j < 7 ->
+					if valida(i,j) ->
+						A[i][j]:=2;
+					[] !valida(i,j) ->
+						skip
+					fi
+					j:=j-1
+				od
+				i:=i-1
+			od
+			
+		[] max=hi->
+			A[x][y-1]:=2;
+		[] max=hd->
+			A[x][y+1]:=2;
+		[]max=vs->
+			A[x][y+1]:=2;
+		[]max=dp->
+			A[x][y+1]:=2;
+		[]max=dpi->
+			A[x][y+1]:=2;
+		[]max=dsi->
+			A[x][y+1]:=2;
+		[]max=dsp->
+			A[x][y+1]:=2;
+		fi
+]
+]
