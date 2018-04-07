@@ -169,11 +169,11 @@ proc victoriadiagonalprincipal(in A : array [0..6)x[0..7); in i,j : int; out gan
 	jugando := True;
 
 	i:=0;
-	{Inv 0<=i<=3 /\    }
+	{Inv 0<=i<=3}
 	{bound 6-i}
 	do i < 3 ->
 		j:=0;
-		{Inv 0<=i<=3 /\ 0<=j<=4 /\  }
+		{Inv 0<=i<=3 /\ 0<=j<=4}
 		{bound 4-j}
 		do j < 4 /\ jugando=True ->
 			#Conexion diagonal principal
@@ -205,11 +205,11 @@ proc victoriahorizontal( in A : array [0..6)x[0..7); in i,j : int; out ganador:i
 
 	jugando,i := True,0;
 
-	{Inv 0<=i<=6 /\    }
+	{Inv 0<=i<=6}
 	{bound 6-i}
 	do i<6->
 		j:=0;
-		{Inv 0<=i<=6 /\ 0<=j<=4 /\ }
+		{Inv 0<=i<=6 /\ 0<=j<=4}
 		{bound 4-j}
 		do j<4 /\ jugando=True->
 			#Conexion horizontal
@@ -241,11 +241,11 @@ proc victoriavertical(in A : array [0..6)x[0..7); in i,j : int; out ganador:int;
 
 	jugando, i := True,0;
 
-	{0<=i<=3 /\ }
+	{0<=i<=3}
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
-		{Inv 0<=i<=3 /\ 0<=j<=7 /\ }
+		{Inv 0<=i<=3 /\ 0<=j<=7}
 		{bound 7-j}
 		do j < 7 /\ jugando=True ->
 			if A[i][j]=A[i+1][j]=A[i+2][j]=A[i+3][j]=1 ->
@@ -275,11 +275,11 @@ proc victoriadiagonalsecundaria(in A : array [0..6)x[0..7); in i,j : int; out ga
 
 	jugando, i := True, 0;
 
-	{Inv 0<=i<=3 /\ (%exist k,l:0<=k<i /\ 0<=l<j:A[k][l] }
+	{Inv 0<=i<=3}
 	{bound 3-i}
 	do i < 3 ->
 		j:=0;
-		{Inv 0<=i<=3 /\ 0<=j<=7 /\ }
+		{Inv 0<=i<=3 /\ 0<=j<=7}
 		{bound 7-j}
 		do j < 7 /\ jugando=True ->
 			#Conexion diagonal secundaria
